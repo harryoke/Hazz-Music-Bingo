@@ -1,7 +1,7 @@
-# v.0.1 validation record
+# v.0.2 validation record
 
 - Release solution build: zero warnings and zero errors.
-- Regression suite: **273 assertions passed**, including 20 independently generated 60-card sets and 24 print-option combinations.
+- Regression suite: **311 assertions passed**, including 20 independently generated 60-card sets and 24 print-option combinations.
 - WPF rendering: card designer, classic/midnight cards, four-card sheet, print preview and host console rendered and inspected. Print viewer pages were loaded through WPF's dispatcher.
 - Standalone Windows x64 self-test: passed native SQLite loading, 60-card generation, 15 four-card pages, archive round trip and Media Foundation WAV decoding.
 - Packaged native SQLite: **3.53.3**. Packaged .NET runtime: **8.0.31**.

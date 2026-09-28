@@ -1,8 +1,8 @@
-# Hazz Music Bingo v.0.1
+# Hazz Music Bingo v.0.2
 
 A Windows music-bingo host with custom 5×5 cards, print previews, an audience screen, missing-music checks and winner verification.
 
-[Download Windows x64](https://github.com/harryoke/Hazz-Music-Bingo/releases/tag/v.0.1) · [User guide](docs/USER_GUIDE.md) · [Build and development](docs/DEVELOPMENT.md) · [Testing](docs/TESTING.md) · [Changes](CHANGELOG.md)
+[Download Windows x64](https://github.com/harryoke/Hazz-Music-Bingo/releases/tag/v.0.2) · [Quick start](docs/QUICK_START.md) · [User guide](docs/USER_GUIDE.md) · [Build and development](docs/DEVELOPMENT.md) · [Testing](docs/TESTING.md) · [Changes](CHANGELOG.md)
 
 ## Copyright and licence
 
@@ -17,6 +17,7 @@ Copyright © 2026 Hazz Karaoke. Free use includes paid shows and business use. U
 - Designs cards with installed fonts, themes, artwork, outlines, custom footers and spacing.
 - Previews and prints card ranges at 1, 2 or 4 per sheet on A4 or Letter, portrait or landscape. PDF output uses Microsoft Print to PDF.
 - Detects missing or previously unreadable music, relinks moved files and excludes unavailable songs from new games.
+- Tracks sold-card ranges live, announces winners to the host and audience, and preserves progress through Line → Four Corners → Full House.
 - Checks a card number for a horizontal or vertical line, four corners or full house.
 - Reopens game history without changing cards, progress or playback order; creates database backups.
 
@@ -28,8 +29,8 @@ Copyright © 2026 Hazz Karaoke. Free use includes paid shows and business use. U
 2. Scan a music folder and use **CHECK MUSIC / LOCATE FILES**.
 3. Generate a game from at least 60 available songs.
 4. Design, preview and print cards; save the game.
-5. Choose the winning rule, open the audience screen and play clips.
-6. Verify claimed winners by game code and card number.
+5. Apply the first/last sold-card range, select Line, open the audience screen and play clips.
+6. Verify and acknowledge winners, then select Four Corners or Full House to continue.
 
 Music is not included. The app uses your files and Windows audio decoding. Windows x64 is required; the release bundles .NET. Data stays in `%LOCALAPPDATA%\HazzMusicBingo` unless an explicit profile override is set.
 

@@ -59,4 +59,12 @@ The app still targets .NET 8. Microsoft lists its end of support as [10 November
 
 Release checklist: update project/assembly version and VERSION.txt; update CHANGELOG and guides; run the build, regression runner and dependency audit; inspect screenshots; rehearse audio/printing/displays; publish self-contained x64 output; package docs and third-party notices; calculate SHA-256 hashes; create the release tag on the tested commit and attach the ZIPs. Do not commit library databases, game saves, user presets or media.
 
-The requested first public release is named **Hazz Music Bingo v.0.1**, tag **v0.1**, assembly version **0.1.0.0**. This intentionally replaces the earlier internal v0.2.15 label; it is not an automatic update-version ordering scheme.
+The requested first public release is named **Hazz Music Bingo v.0.1**, tag **v.0.1**, assembly version **0.1.0.0**. This intentionally replaces the earlier internal v0.2.15 label; it is not an automatic update-version ordering scheme.
+
+## v.0.2 winning-state persistence
+
+`GameWinningSettings` is an additive table keyed by game ID with a JSON Settings column. `WinningSettings` stores Pattern (existing numeric enum values 0/1/2), nullable FirstCard/LastCard and AcknowledgedWinners rule/card keys. Missing settings mean Line with automatic tracking disabled. `LiveWinnerService` validates all range members against saved card numbers, detects qualifying cards and supplies acknowledgement keys and navigation helpers.
+
+Version-1 archives add an optional Winning object. Validation precedes mutation; winning settings are inserted in the same transaction as game state and cards. Reset clears acknowledgements transactionally with played state. Rule changes only update settings. Older apps ignore the optional archive object and will lose those settings if they resave it.
+
+The current release is **v.0.2**, tag **v.0.2**, application version **0.2.0**. The original public release remains at tag **v.0.1**. The legacy release-v0.1 workflow must not be used to publish newer versions: create their own versioned tag and assets after validation. Normal main-branch CI does not publish releases.

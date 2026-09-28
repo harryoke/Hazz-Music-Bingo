@@ -1,8 +1,8 @@
-# Hazz Music Bingo v.0.1 — user guide
+# Hazz Music Bingo v.0.2 — user guide
 
 ## Install and start
 
-Download the Windows x64 ZIP from the [v0.1 release](https://github.com/harryoke/Hazz-Music-Bingo/releases/tag/v0.1), extract it, and run **HazzMusicBingo.exe**. The .NET runtime is included. The application is unsigned. Windows audio support and a working sound output are required. No music is included. Keep your own music on a local or reliably connected drive.
+Download the Windows x64 ZIP from the [v.0.2 release](https://github.com/harryoke/Hazz-Music-Bingo/releases/tag/v.0.2), extract it, and run **HazzMusicBingo.exe**. The .NET runtime is included. The application is unsigned. Windows audio support and a working sound output are required. No music is included. Keep your own music on a local or reliably connected drive.
 
 The app stores its library, games and settings in `%LOCALAPPDATA%\HazzMusicBingo`. Moving or replacing the executable does not move or erase this data. First startup creates an empty database. Later startups reopen the active game automatically.
 
@@ -16,8 +16,8 @@ The host window needs at least 1120 × 680 logical pixels. A second monitor is o
 4. Open **BINGO CARD DESIGN**, adjust the design, and select **Use Design**.
 5. Open **PREVIEW / PRINT CARDS**, select your card range and paper options, review the pages, and print one sample before the complete run.
 6. Select **SAVE GAME** to create a portable game file. Keep the file with the event paperwork.
-7. Announce the winning pattern. Open the audience screen, select a clip length, and use **PLAY NEXT SONG**.
-8. When a player calls bingo, use **CHECK WINNING CARD** and compare the printed game code before entering the card number.
+7. Enter the first/last sold card numbers under **PLAYING FOR**, press **Apply**, and select **Line**. Open the audience screen, select a clip length, and use **PLAY NEXT SONG**.
+8. The live panel lists winning cards. Verify the game code in **CHECK WINNING CARD**, acknowledge the winners, then select **Four Corners** and later **Full House** without resetting songs. See [Quick start](QUICK_START.md) for an event checklist.
 
 ## Music library and missing files
 
@@ -82,7 +82,7 @@ The app fits each page into the selected printer's printable area, respecting ha
 
 **Play Next Song** chooses the next unplayed song. Clip lengths range from 10 to 60 seconds, with a two-second fade at the end. Short recordings finish earlier. **Stop** stops immediately. **Repeat Last** replays the previous song without adding another played entry; Next can interrupt a repeat.
 
-A track is marked played once audio output starts successfully. A missing file or decoder/output-initialisation failure leaves it unplayed. If the host stops a clip after it starts, it remains played. An audio device failing later does not undo the played flag. There is no single-song undo or skip button in v.0.1; repair missing music and retry, or replay the last song when appropriate.
+A track is marked played once audio output starts successfully. A missing file or decoder/output-initialisation failure leaves it unplayed. If the host stops a clip after it starts, it remains played. An audio device failing later does not undo the played flag. There is no single-song undo or skip button in v.0.2; repair missing music and retry, or replay the last song when appropriate.
 
 **Check Played Songs** opens an alphabetical, paged list on the host and audience screen. Next/Previous pages on the host control the audience list. Closing the list restores the current-song display.
 
@@ -151,3 +151,9 @@ For the usual progression, acknowledge the Line winner, select Four Corners, the
 **Check Winning Card** opens on the active rule. **Previous Card** and **Next Card** move through actual saved card numbers and stop at the ends; manual checking can inspect unsold cards too. The in-play range only limits automatic detection.
 
 The rule, applied range and acknowledgements are stored with each game and included in portable saves. Older saves default to Line with tracking off until a range is applied. Reset to zero clears played songs and acknowledgements, keeping the selected rule and sold-card range.
+
+## Illustrated winner controls
+
+![Saved-card navigation and marked squares](images/winner-navigation.png)
+
+![Audience win banner above the played-song list](images/audience-winner.png)

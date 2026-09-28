@@ -8,7 +8,8 @@ The release suite checks database behaviour and real WPF controls/rendering usin
 - Exact card-layout save/load round trips, progress preservation and reset behaviour.
 - Malformed archives, missing files, transaction rollback after forced card-insertion failure, and atomic save replacement.
 - Playback-start callback not invoked for missing audio.
-- All 12 line wins and near misses; four corners, full house, empty progress and unrelated played IDs.
+- All 10 horizontal/vertical line wins and near misses; four corners, full house, empty progress and unrelated played IDs.
+- Both diagonals rejected; inclusive sold-card filtering, multiple live winners, acknowledgement persistence, rule progression, legacy saves and Previous/Next navigation (including actual WPF button events).
 - History reopening preserves order, played state and layouts; failed recovery preserves the active game.
 - Database backup can reopen with cards and active state.
 - Missing-file detection, availability filtering, relinking preserving identities, and rejection of duplicate target paths.

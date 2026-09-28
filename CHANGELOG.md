@@ -18,7 +18,7 @@ The public version name is intentionally reset from the supplied internal v0.2.1
 
 Hardware-dependent audio, physical printing and multi-monitor rehearsal remain required. See the testing guide for the validation boundary.
 
-## Unreleased — live winner tracking
+## v.0.2 — live winner tracking
 
 - Added sold-card ranges, persistent rule selection and automatic host/audience winner messages.
 - Added winner acknowledgement and Line → Four Corners → Full House progression with played progress retained.

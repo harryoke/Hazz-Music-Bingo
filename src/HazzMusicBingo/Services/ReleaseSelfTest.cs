@@ -38,7 +38,7 @@ internal static class ReleaseSelfTest
             cn.Open(); using var cmd = cn.CreateCommand(); cmd.CommandText = "SELECT sqlite_version();";
             await File.WriteAllTextAsync(reportPath, JsonSerializer.Serialize(new
             {
-                result = "PASS", version = "0.1.0", sqliteVersion = (string?)cmd.ExecuteScalar(),
+                result = "PASS", version = "0.2.0", sqliteVersion = (string?)cmd.ExecuteScalar(),
                 runtimeVersion = Environment.Version.ToString(), cards = cards.Count, sheets = document.Pages.Count,
                 checks = "SQLite native loading, card generation, WPF page rendering, archive round trip, Media Foundation WAV decoding"
             }, new JsonSerializerOptions { WriteIndented = true }));
