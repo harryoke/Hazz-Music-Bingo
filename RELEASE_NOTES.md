@@ -2,6 +2,10 @@
 
 First public release, based on the previously reviewed internal v0.2.15 source.
 
+## Copyright and licence
+
+Copyright © 2026 Hazz Karaoke. Free use includes paid shows and business use. Unchanged copies may be shared free with all Hazz Music Bingo branding, copyright notices, this licence and third-party notices intact. Redistribution of renamed, rebranded or modified versions requires prior written permission. This is source-available software, not an open-source licence. See `LICENSE.txt` included with the downloads and in the repository.
+
 ## New and improved
 
 - Fixed card font changes taking effect one selection late; designer and printer now share the same renderer.
@@ -15,7 +19,7 @@ First public release, based on the previously reviewed internal v0.2.15 source.
 
 ## Downloads
 
-Choose **Hazz-Music-Bingo-v0.1-Windows-x64.zip** to run the app. Extract it and launch `HazzMusicBingo.exe`; .NET is included. Choose the source ZIP to build or modify it. Both packages include documentation; SHA256SUMS.txt lists package hashes.
+Choose **Hazz-Music-Bingo-v0.1-Windows-x64.zip** to run the app. Extract it and launch `HazzMusicBingo.exe`; .NET is included. Choose the source ZIP to build or modify it. Both packages include the Hazz Music Bingo licence and documentation; SHA256SUMS.txt lists package hashes.
 
 Existing local databases and structurally valid version-1 game files remain supported. Music and artwork are not bundled. The executable is unsigned. The public version label intentionally changes from the older internal numbering to v.0.1.
 
