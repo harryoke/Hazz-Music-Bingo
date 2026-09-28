@@ -1,0 +1,97 @@
+name: Publish Hazz Music Bingo v.0.1
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/release-v0.1.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    if: github.repository == 'harryoke/Hazz-Music-Bingo'
+    runs-on: windows-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Build release
+        run: dotnet build HazzMusicBingo.sln -c Release
+
+      - name: Regression and WPF rendering checks
+        run: dotnet run --project tests/HazzMusicBingo.Regression -c Release --no-build -- artifacts/screenshots
+
+      - name: Dependency audit
+        run: dotnet list src/HazzMusicBingo/HazzMusicBingo.csproj package --vulnerable --include-transitive
+
+      - name: Publish self-contained Windows x64 app
+        run: dotnet publish src/HazzMusicBingo/HazzMusicBingo.csproj -c Release -r win-x64 --self-contained true -p:DebugType=None -p:DebugSymbols=false -o artifacts/windows
+
+      - name: Test packaged executable
+        shell: pwsh
+        run: |
+          $report = Join-Path $PWD 'artifacts/standalone-test.json'
+          $process = Start-Process -FilePath 'artifacts/windows/HazzMusicBingo.exe' -ArgumentList @('--self-test', $report) -WindowStyle Hidden -PassThru
+          if (-not $process.WaitForExit(60000)) { throw 'Standalone test timed out' }
+          if ($process.ExitCode -ne 0) { throw "Standalone test failed: $($process.ExitCode)" }
+          Get-Content $report
+
+      - name: Assemble release packages
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force release | Out-Null
+
+          Copy-Item README.md artifacts/windows/
+          Copy-Item RELEASE_NOTES.md artifacts/windows/
+          Copy-Item THIRD_PARTY_NOTICES.md artifacts/windows/
+          Copy-Item VERSION.txt artifacts/windows/
+          Copy-Item docs artifacts/windows/docs -Recurse
+          Copy-Item licenses artifacts/windows/licenses -Recurse
+
+          $windowsZip = 'release/Hazz-Music-Bingo-v0.1-Windows-x64.zip'
+          $sourceZip = 'release/Hazz-Music-Bingo-v0.1-Source.zip'
+
+          if (Test-Path $windowsZip) { Remove-Item $windowsZip -Force }
+          Compress-Archive -Path 'artifacts/windows/*' -DestinationPath $windowsZip -CompressionLevel Optimal
+
+          git archive --format=zip --output=$sourceZip HEAD
+          if ($LASTEXITCODE -ne 0) { throw 'git archive failed' }
+
+          $lines = @()
+          foreach ($file in @($windowsZip, $sourceZip)) {
+            $hash = (Get-FileHash $file -Algorithm SHA256).Hash.ToLowerInvariant()
+            $name = Split-Path $file -Leaf
+            $lines += "$hash  $name"
+          }
+          $lines | Set-Content -Path 'release/SHA256SUMS.txt' -Encoding ascii
+          Get-Content 'release/SHA256SUMS.txt'
+
+      - name: Publish GitHub Release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $tag = 'v.0.1'
+          gh release view $tag --repo $env:GITHUB_REPOSITORY *> $null
+          if ($LASTEXITCODE -eq 0) {
+            Write-Host "Release $tag already exists; nothing to publish."
+            exit 0
+          }
+
+          gh release create $tag `
+            --repo $env:GITHUB_REPOSITORY `
+            --target $env:GITHUB_SHA `
+            --title 'Hazz Music Bingo v.0.1' `
+            --notes-file RELEASE_NOTES.md `
+            'release/Hazz-Music-Bingo-v0.1-Windows-x64.zip' `
+            'release/Hazz-Music-Bingo-v0.1-Source.zip' `
+            'release/SHA256SUMS.txt'
+
+          if ($LASTEXITCODE -ne 0) { throw 'GitHub Release creation failed' }
