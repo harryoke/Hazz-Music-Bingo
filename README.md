@@ -2,7 +2,11 @@
 
 A Windows music-bingo host with custom 5×5 cards, print previews, an audience screen, missing-music checks and winner verification.
 
-[Download Windows x64](https://github.com/harryoke/Hazz-Music-Bingo/releases/tag/v0.1) · [User guide](docs/USER_GUIDE.md) · [Build and development](docs/DEVELOPMENT.md) · [Testing](docs/TESTING.md) · [Changes](CHANGELOG.md)
+[Download Windows x64](https://github.com/harryoke/Hazz-Music-Bingo/releases/tag/v.0.1) · [User guide](docs/USER_GUIDE.md) · [Build and development](docs/DEVELOPMENT.md) · [Testing](docs/TESTING.md) · [Changes](CHANGELOG.md)
+
+## Copyright and licence
+
+Copyright © 2026 Hazz Karaoke. Free use includes paid shows and business use. Unchanged copies may be shared free with all branding and notices intact. Redistribution of renamed, rebranded or modified versions requires written permission. Third-party licences and statutory rights remain unaffected. See [full licence terms](LICENSE.txt). This is source-available software, not an open-source licence.
 
 ![Host console](docs/images/host-console.png)
 
