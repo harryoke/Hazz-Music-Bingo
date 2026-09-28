@@ -1,0 +1,32 @@
+﻿<Window x:Class="HazzMusicBingo.Views.CardCountWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Print Music Bingo Cards"
+        SizeToContent="WidthAndHeight"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterOwner">
+    <StackPanel Margin="22" Width="360">
+        <TextBlock Text="How many cards do you want to print?"
+                   FontSize="20"
+                   FontWeight="SemiBold"
+                   TextWrapping="Wrap"
+                   Margin="0,0,0,12"/>
+
+        <TextBlock Text="Maximum 60 cards per game using the strict no-same-song-in-the-same-position rule."
+                   TextWrapping="Wrap"
+                   Margin="0,0,0,14"/>
+
+        <TextBox x:Name="CountBox"
+                 Text="20"
+                 FontSize="22"
+                 Padding="8"
+                 HorizontalContentAlignment="Center"/>
+
+        <StackPanel Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Margin="0,18,0,0">
+            <Button Content="Cancel" Width="100" Click="Cancel_Click"/>
+            <Button Content="Print" Width="100" Click="Print_Click"/>
+        </StackPanel>
+    </StackPanel>
+</Window>

@@ -1,0 +1,51 @@
+HAZZ MUSIC BINGO - STANDALONE EXE
+
+EASIEST METHOD
+==============
+
+1. Extract the complete source ZIP to a normal folder.
+2. Double-click:
+
+   BUILD_STANDALONE_EXE.bat
+
+3. Wait for Restore and Publish to finish.
+4. When successful, Explorer opens:
+
+   STANDALONE_EXE
+
+5. Run/copy:
+
+   HazzMusicBingo.exe
+
+That EXE is self-contained for 64-bit Windows and includes the .NET runtime.
+
+
+VISUAL STUDIO 2026 METHOD
+=========================
+
+1. Open HazzMusicBingo.sln.
+2. Build the project once normally to confirm there are no compile errors.
+3. In Solution Explorer, right-click the HazzMusicBingo project.
+4. Choose Publish.
+5. Select the existing publish profile:
+
+   StandaloneWin64
+
+6. Click Publish.
+
+The published EXE will normally be under:
+
+src\HazzMusicBingo\bin\Release\net8.0-windows\win-x64\publish\
+
+
+IMPORTANT
+=========
+
+Use PUBLISH, not just Build.
+
+A normal Visual Studio Build is the developer build and is not the standalone
+single-file package.
+
+The publish profile deliberately has trimming disabled because this is a WPF app
+using libraries such as Microsoft.Data.Sqlite and NAudio. This avoids runtime
+problems caused by aggressive trimming.
