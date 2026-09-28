@@ -1,0 +1,69 @@
+HAZZ MUSIC BINGO - FREE USE AND ORIGINAL BRANDING LICENCE
+Version 1 - 28 September 2026
+
+Copyright © 2026 Hazz Karaoke. All rights reserved in the original Hazz Music Bingo code, documentation, branding and artwork. Third-party components remain subject to their respective licences.
+All rights reserved except as expressly permitted below.
+Project publisher: https://github.com/harryoke/Hazz-Music-Bingo
+
+1. Scope
+These terms cover the Hazz Music Bingo code, application, documentation
+and original artwork to the extent the publisher owns or may license them.
+Third-party materials are excluded and remain under their own licences.
+This is a custom source-available licence, not an open-source licence.
+
+2. Free use
+You may download, install, run and make backup copies of Hazz Music Bingo
+without paying a software licence fee. This includes personal use and
+commercial use at paid music bingo shows, DJ events, venues and businesses.
+You may inspect the source, compile it, and modify it for your own private
+or internal use. You may share official download links freely.
+
+3. Sharing unchanged copies
+You may redistribute complete, unmodified official releases or unmodified
+source copies free of charge if you retain the Hazz Music Bingo name,
+branding, copyright notices, this licence and all third-party notices.
+Include the official project URL and do not imply that you are the author
+or that your distribution is endorsed by Hazz Karaoke.
+
+4. No redistribution of rebranded or modified versions
+Without prior written permission from the publisher, you may not distribute,
+publish, sell, rent, sublicense or otherwise supply to others a renamed,
+rebranded or modified version of the covered software or its source code.
+This includes replacing the Hazz name or logo with another product identity,
+removing attribution, presenting the covered code as your own product, or
+distributing a derivative product containing substantial covered code.
+Keeping the original name does not by itself permit distribution of a
+modified version. Charging for your hosting/DJ services under section 2
+is allowed; charging for copies of the software requires written permission.
+You may submit proposed changes to the official project for review.
+
+5. GitHub and third-party rights
+Nothing here restricts rights granted by GitHub's applicable terms to view
+or fork a public repository using GitHub's functionality. Such a fork is
+not permission to publish a rebranded application or claim authorship.
+Third-party code, runtimes, fonts, libraries and artwork retain their own
+copyrights and licence terms. Those terms govern those components and take
+precedence over conflicting restrictions here. Preserve required notices.
+This licence grants no rights in users' music, lyrics, videos, images or
+other media.
+
+6. Ownership and branding
+No ownership is transferred. Use of the Hazz name and logo is permitted only
+as needed to identify the software and share unchanged copies as allowed
+above. No right to claim endorsement or use the branding for a different
+product is granted. Rights not expressly granted are reserved.
+
+7. Warranty and legal rights
+The software is supplied as is, without a promise of uninterrupted or
+error-free operation, support or future updates. To the extent permitted by
+applicable law, warranties are excluded and the publisher is not liable for
+loss arising from use of the software. Nothing excludes liability or limits
+consumer rights, statutory exceptions or other rights that cannot lawfully
+be excluded or restricted.
+
+8. Versions and existing permissions
+These terms apply to copies supplied under this licence. They do not revoke
+rights already granted under another licence or retrospectively change
+earlier agreements. Keep this licence with copies you distribute.
+For uses outside these permissions, request written permission through the
+official project contact channels before proceeding.
