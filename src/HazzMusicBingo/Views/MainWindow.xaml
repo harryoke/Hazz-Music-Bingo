@@ -293,6 +293,25 @@
                     Margin="8,0,0,0">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <StackPanel>
+                        <StackPanel x:Name="WinningControls" IsEnabled="False" Margin="0,6,0,10">
+                            <TextBlock Text="PLAYING FOR" FontWeight="Bold"/>
+                            <WrapPanel>
+                                <Button x:Name="LineRuleButton" Content="Line" Tag="0" Click="WinningRule_Click"/>
+                                <Button x:Name="CornersRuleButton" Content="Four Corners" Tag="1" Click="WinningRule_Click"/>
+                                <Button x:Name="HouseRuleButton" Content="Full House" Tag="2" Click="WinningRule_Click"/>
+                            </WrapPanel>
+                            <WrapPanel VerticalAlignment="Center">
+                                <TextBlock Text="Cards from" VerticalAlignment="Center"/>
+                                <TextBox x:Name="FirstCardBox" Text="1" Width="42" Margin="5" VerticalContentAlignment="Center"/>
+                                <TextBlock Text="to" VerticalAlignment="Center"/>
+                                <TextBox x:Name="LastCardBox" Text="60" Width="42" Margin="5" VerticalContentAlignment="Center"/>
+                                <Button Content="Apply" Click="ApplyRange_Click"/>
+                            </WrapPanel>
+                            <TextBlock x:Name="RangeStatusText" TextWrapping="Wrap"/>
+                            <TextBlock x:Name="WinnerStatusText" TextWrapping="Wrap" FontWeight="Bold" FontSize="16" Margin="0,8"/>
+                            <Button x:Name="AcknowledgeButton" Content="ACKNOWLEDGE WINNER(S)" Click="Acknowledge_Click" IsEnabled="False"/>
+                            <TextBlock Text="Acknowledge, then choose the next rule to continue." TextWrapping="Wrap" FontSize="12"/>
+                        </StackPanel>
                         <TextBlock Text="DESIGN &amp; OUTPUT"
                                    Style="{StaticResource SectionHeading}"/>
 

@@ -16,6 +16,7 @@ namespace HazzMusicBingo.Views;
 public partial class AudienceWindow : Window
 {
     public const int PlayedSongsPageSize = 6;
+    public void ShowWinningMessage(string message) => WinningMessage.Text = message;
 
     private AudienceDesignSettings _design;
     private IReadOnlyList<Track> _currentPlayedTracks = Array.Empty<Track>();

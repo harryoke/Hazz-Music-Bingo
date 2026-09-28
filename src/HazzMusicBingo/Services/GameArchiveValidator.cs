@@ -50,5 +50,8 @@ public static class GameArchiveValidator
             if (!sets.Add(key))
                 throw new InvalidDataException("Two saved cards contain the same set of songs.");
         }
+        if (archive.Winning is null) throw new InvalidDataException("Invalid winning settings.");
+        try { LiveWinnerService.Validate(archive.Winning, numbers); }
+        catch (ArgumentException ex) { throw new InvalidDataException(ex.Message, ex); }
     }
 }

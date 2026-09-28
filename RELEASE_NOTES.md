@@ -12,7 +12,7 @@ Copyright © 2026 Hazz Karaoke. Free use includes paid shows and business use. U
 - Four card themes, footer text, row shading, grid thickness, padding and left-aligned labels.
 - Print preview with card ranges, 1/2/4 cards per sheet, A4/Letter, orientation, margins, ink saver, printer page ranges and PDF printing through Windows.
 - Missing-music checks and file relinking; new games exclude unavailable or previously undecodable files.
-- Card-number winner checking for any row/column/diagonal, four corners and full house.
+- Card-number winner checking for a horizontal or vertical line, four corners and full house.
 - Persistent game codes, local game history, exact-state reopening and database backups.
 - User guide, developer guide, illustrated examples, regression suite and Windows CI.
 - Updated SQLite dependencies and bundled .NET runtime.

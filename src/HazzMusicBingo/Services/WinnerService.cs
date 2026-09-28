@@ -19,8 +19,6 @@ public static class WinnerService
             if (Enumerable.Range(0, 5).All(c => marked[i * 5 + c])) lines.Add($"Row {i + 1}");
             if (Enumerable.Range(0, 5).All(r => marked[r * 5 + i])) lines.Add($"Column {i + 1}");
         }
-        if (Enumerable.Range(0, 5).All(i => marked[i * 6])) lines.Add("Diagonal ↘");
-        if (Enumerable.Range(0, 5).All(i => marked[4 + i * 4])) lines.Add("Diagonal ↙");
         var winner = pattern switch
         {
             WinningPattern.AnyLine => lines.Count > 0,

@@ -31,8 +31,9 @@ internal static class FeatureTests
         var card = (await db.GetCardsAsync(game, 60))[0];
         var ids = card.Squares.Select(t => t.Id).ToArray();
         var patterns = Enumerable.Range(0, 5).Select(r => Enumerable.Range(0, 5).Select(c => r * 5 + c).ToArray())
-            .Concat(Enumerable.Range(0, 5).Select(c => Enumerable.Range(0, 5).Select(r => r * 5 + c).ToArray()))
-            .Concat(new[] { new[] { 0, 6, 12, 18, 24 }, new[] { 4, 8, 12, 16, 20 } });
+            .Concat(Enumerable.Range(0, 5).Select(c => Enumerable.Range(0, 5).Select(r => r * 5 + c).ToArray()));
+        foreach (var diagonal in new[] { new[] { 0, 6, 12, 18, 24 }, new[] { 4, 8, 12, 16, 20 } })
+            Check(!WinnerService.Check(card, diagonal.Select(i => ids[i]), WinningPattern.AnyLine).IsWinner, "Diagonal is not a line");
         foreach (var pattern in patterns)
         {
             Check(WinnerService.Check(card, pattern.Select(i => ids[i]), WinningPattern.AnyLine).IsWinner, "Every winning line");

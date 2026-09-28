@@ -17,7 +17,7 @@ Copyright © 2026 Hazz Karaoke. Free use includes paid shows and business use. U
 - Designs cards with installed fonts, themes, artwork, outlines, custom footers and spacing.
 - Previews and prints card ranges at 1, 2 or 4 per sheet on A4 or Letter, portrait or landscape. PDF output uses Microsoft Print to PDF.
 - Detects missing or previously unreadable music, relinks moved files and excludes unavailable songs from new games.
-- Checks a card number for any row/column/diagonal, four corners or full house.
+- Checks a card number for a horizontal or vertical line, four corners or full house.
 - Reopens game history without changing cards, progress or playback order; creates database backups.
 
 ![Card designer](docs/images/card-designer.png)

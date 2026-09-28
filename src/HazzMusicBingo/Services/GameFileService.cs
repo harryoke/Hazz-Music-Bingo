@@ -20,6 +20,7 @@ public sealed class GameFileService
         var archive = new GameArchive
         {
             SessionCode = await _db.GetSessionCodeAsync(gameId),
+            Winning = await _db.GetWinningSettingsAsync(gameId),
             SavedUtc = DateTime.UtcNow,
             Tracks = states.Select(s => new GameArchiveTrack
             {
@@ -121,7 +122,7 @@ public sealed class GameFileService
         }).ToList();
 
         // Commit the game, progress and cards together; a failed insert keeps the old game active.
-        var gameId = await _db.CreateGameWithStateAsync(states, cards, archive.SessionCode);
+        var gameId = await _db.CreateGameWithStateAsync(states, cards, archive.SessionCode, archive.Winning);
         return new GameLoadResult
         {
             GameId = gameId,

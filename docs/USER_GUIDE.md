@@ -92,7 +92,7 @@ With multiple monitors the audience window uses a non-primary screen. With one s
 
 Open **CHECK WINNING CARD**, compare its displayed game code with the paper card, and enter a card number from 1 to 60. Select:
 
-- **Any row, column or diagonal**: five marked squares in a horizontal line, vertical line or either main diagonal.
+- **Line**: five marked squares in any complete horizontal or vertical line.
 - **Four corners**: all four corner songs played.
 - **Full house**: all 25 songs played.
 
@@ -139,3 +139,15 @@ Advanced: `HAZZ_MUSIC_BINGO_DATA_DIR` can select a separate data directory for o
 | No previous games in history | Confirm the Windows account and data-directory override. A fresh profile has a different database. |
 
 This release has automated logic and WPF-rendering checks. Physical audio output, physical printer drivers and mixed-DPI multi-monitor behaviour still require an event-machine rehearsal.
+
+## Live winning rules and cards in play
+
+Generate/print the saved cards, then enter the first and last sold card numbers under **PLAYING FOR** and press **Apply**. The range is inclusive: 1 to 42 means 42 cards. Both ends and every intervening number must exist in the saved set. Live tracking remains off until a range is applied; editing the boxes alone does not change the applied range shown below them.
+
+Select **Line**, **Four Corners**, or **Full House**. The selected button has a check mark and purple background. Line means any complete horizontal or vertical line. The host panel lists every qualifying in-play card as soon as a song starts successfully. The highlighted acknowledgement panel is non-modal, so playback continues normally. Verify claims against the printed game code, then press **Acknowledge winner(s)**. The same card/rule is not flagged again after acknowledgement, including after reopening a game. Newly qualifying cards still appear.
+
+For the usual progression, acknowledge the Line winner, select Four Corners, then later select Full House. Changing rules never clears songs or changes playback order. A rule that is already complete is detected immediately. The audience banner changes from “WE ARE PLAYING FOR …” to “… WON!” while the current song or played list remains visible. Acknowledgement leaves the win banner in place until another rule is selected.
+
+**Check Winning Card** opens on the active rule. **Previous Card** and **Next Card** move through actual saved card numbers and stop at the ends; manual checking can inspect unsold cards too. The in-play range only limits automatic detection.
+
+The rule, applied range and acknowledgements are stored with each game and included in portable saves. Older saves default to Line with tracking off until a range is applied. Reset to zero clears played songs and acknowledgements, keeping the selected rule and sold-card range.

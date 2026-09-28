@@ -93,6 +93,39 @@ internal static class UiTests
         var history = new GameHistoryWindow(db);
         var winner = new WinnerWindow(db, 1, "ABCDEF123456");
         var main = new MainWindow();
+        var flags = System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic;
+        for (var i = 1; i <= 60; i++)
+            db.UpsertTrackAsync(Path.Combine(outputFolder, $"ui-song-{i}.wav"), $"Song {i}", "Artist", 30, 0).GetAwaiter().GetResult();
+        var liveGame = db.CreateGameAsync(db.GetRandomTracksAsync(60).GetAwaiter().GetResult()).GetAwaiter().GetResult();
+        new CardGenerator(db).EnsureStrictCardsExistAsync(liveGame).GetAwaiter().GetResult();
+        var liveCards = db.GetCardsAsync(liveGame, 60).GetAwaiter().GetResult();
+        db.SaveWinningSettingsAsync(liveGame, new WinningSettings { FirstCard = 1, LastCard = 42 }).GetAwaiter().GetResult();
+        foreach (var track in liveCards[0].Squares.Take(5)) db.MarkTrackPlayedAsync(liveGame, track.Id).GetAwaiter().GetResult();
+        typeof(MainWindow).GetField("_gameId", flags)!.SetValue(main, (long?)liveGame);
+        typeof(MainWindow).GetMethod("EnableGameControls", flags)!.Invoke(main, [true]);
+        ((Task)typeof(MainWindow).GetMethod("RefreshWinningAsync", flags)!.Invoke(main, null)!).GetAwaiter().GetResult();
+        Check(((TextBlock)main.FindName("WinnerStatusText")).Text.Contains("LINE WON"), "Host displays live winner");
+        ((Button)main.FindName("AcknowledgeButton")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        Check(!((Button)main.FindName("AcknowledgeButton")).IsEnabled, "Acknowledge button suppresses repeat alert");
+        ((Button)main.FindName("CornersRuleButton")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        Check(db.GetWinningSettingsAsync(liveGame).GetAwaiter().GetResult().Pattern == WinningPattern.FourCorners
+            && db.GetPlayedCountAsync(liveGame).GetAwaiter().GetResult() == 5, "Host rule button changes rule without resetting songs");
+        var navigate = new WinnerWindow(db, liveGame, "ABCDEF123456");
+        typeof(WinnerWindow).GetMethod("Check_Click", flags)!.Invoke(navigate, [navigate, new RoutedEventArgs()]);
+        Check(!((Button)navigate.FindName("PreviousButton")).IsEnabled, "Previous disabled at first card");
+        ((Button)navigate.FindName("NextButton")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        Check(((TextBox)navigate.FindName("CardBox")).Text == "2" && ((TextBlock)navigate.FindName("ResultText")).Text.Contains("CARD 002"), "Next button redraws saved card");
+        ((Button)navigate.FindName("PreviousButton")).RaiseEvent(new RoutedEventArgs(Button.ClickEvent));
+        Check(((TextBox)navigate.FindName("CardBox")).Text == "1", "Previous button navigates back");
+        var audience = new AudienceWindow(new AudienceDesignSettings());
+        audience.ShowWinningMessage("LINE WON!");
+        audience.ShowTrack(liveCards[0].Squares[0]);
+        Check(((TextBlock)audience.FindName("WinningMessage")).Text == "LINE WON!", "Track display preserves rule banner");
+        audience.ShowPlayedSongs(liveCards[0].Squares.Take(5).ToList(), 0);
+        Check(((TextBlock)audience.FindName("WinningMessage")).Text == "LINE WON!", "Played list preserves rule banner");
+        Render((FrameworkElement)audience.Content, Path.Combine(outputFolder, "audience-winner.png"), 1280, 720);
+        Render((FrameworkElement)navigate.Content, Path.Combine(outputFolder, "winner-navigation.png"), 1050, 780);
+        navigate.Close(); audience.Close();
         foreach (var view in new Window[] { health, history, winner, main })
         {
             Layout((FrameworkElement)view.Content, view.Width, view.Height);

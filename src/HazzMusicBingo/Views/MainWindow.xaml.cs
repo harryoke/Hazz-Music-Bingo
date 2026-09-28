@@ -84,6 +84,7 @@ public partial class MainWindow : Window
 
     private async Task RefreshStatusAsync(bool checkMusic = true)
     {
+        await RefreshWinningAsync();
         var game = _gameId;
         var total = await _db.GetTrackCountAsync();
         LibraryCountText.Text = $"Songs indexed: {total:N0}";
@@ -112,6 +113,7 @@ public partial class MainWindow : Window
     private void EnableGameControls(bool enabled)
     {
         WinnerButton.IsEnabled = enabled;
+        WinningControls.IsEnabled = enabled;
         PlayNextButton.IsEnabled = enabled;
         StopButton.IsEnabled = enabled;
         PlayedSongsButton.IsEnabled = enabled;
@@ -522,6 +524,7 @@ public partial class MainWindow : Window
             (_, _) => _audience = null;
 
         _audience.Show();
+        _audience.ShowWinningMessage(_gameId.HasValue ? LiveWinnerService.AudienceMessage(_winning.Pattern, _winners.Count > 0) : "");
     }
 
     private void CardDesign_Click(
@@ -586,6 +589,7 @@ public partial class MainWindow : Window
 
             var code = await _db.GetSessionCodeAsync(_gameId.Value);
             new PrintCardsWindow(cards, _cardDesign, code) { Owner = this }.ShowDialog();
+            await RefreshWinningAsync();
         }
         catch (Exception ex)
         {
@@ -840,7 +844,7 @@ public partial class MainWindow : Window
         try
         {
             var code = await _db.GetSessionCodeAsync(_gameId.Value);
-            new WinnerWindow(_db, _gameId.Value, code) { Owner = this }.ShowDialog();
+            new WinnerWindow(_db, _gameId.Value, code, _winning.Pattern) { Owner = this }.ShowDialog();
         }
         catch (Exception ex) { MessageBox.Show(this, ex.Message, "Winner check"); }
     }

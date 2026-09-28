@@ -55,6 +55,11 @@ public sealed partial class AppDatabase
             FOREIGN KEY(TrackId) REFERENCES Tracks(Id)
         );
 
+        CREATE TABLE IF NOT EXISTS GameWinningSettings(
+            GameId INTEGER PRIMARY KEY REFERENCES Games(Id),
+            Settings TEXT NOT NULL
+        );
+
         CREATE INDEX IF NOT EXISTS IX_GameTracks_Game_PlayOrder
         ON GameTracks(GameId, PlayOrder);
 
@@ -335,6 +340,13 @@ public sealed partial class AppDatabase
             await cmd.ExecuteNonQueryAsync();
         }
 
+        await using (var clear = cn.CreateCommand())
+        {
+            clear.Transaction = (SqliteTransaction)tx;
+            clear.CommandText = "UPDATE GameWinningSettings SET Settings=json_set(Settings, '$.AcknowledgedWinners', json('[]')) WHERE GameId=$game";
+            clear.Parameters.AddWithValue("$game", gameId);
+            await clear.ExecuteNonQueryAsync();
+        }
         await tx.CommitAsync();
     }
 
@@ -518,7 +530,7 @@ public sealed partial class AppDatabase
     }
 
     public async Task<long> CreateGameWithStateAsync(
-        IReadOnlyList<GameTrackState> states, IReadOnlyList<BingoCard>? cards = null, string? sessionCode = null)
+        IReadOnlyList<GameTrackState> states, IReadOnlyList<BingoCard>? cards = null, string? sessionCode = null, WinningSettings? winning = null)
     {
         if (states.Count == 0)
             throw new InvalidOperationException("The saved game contains no tracks.");
@@ -573,6 +585,12 @@ public sealed partial class AppDatabase
 
         if (cards is not null)
             await InsertCardsAsync(cn, (SqliteTransaction)tx, gameId, cards);
+
+        if (winning is not null)
+        {
+            HazzMusicBingo.Services.LiveWinnerService.Validate(winning, cards?.Select(c => c.CardNumber) ?? Enumerable.Empty<int>());
+            await WriteWinningSettingsAsync(cn, (SqliteTransaction)tx, gameId, winning);
+        }
 
         await tx.CommitAsync();
         return gameId;
