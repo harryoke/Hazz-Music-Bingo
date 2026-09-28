@@ -48,6 +48,7 @@ jobs:
         run: |
           New-Item -ItemType Directory -Force release | Out-Null
 
+          Copy-Item LICENSE.txt artifacts/windows/
           Copy-Item README.md artifacts/windows/
           Copy-Item RELEASE_NOTES.md artifacts/windows/
           Copy-Item THIRD_PARTY_NOTICES.md artifacts/windows/
@@ -73,7 +74,7 @@ jobs:
           $lines | Set-Content -Path 'release/SHA256SUMS.txt' -Encoding ascii
           Get-Content 'release/SHA256SUMS.txt'
 
-      - name: Publish GitHub Release
+      - name: Publish or refresh GitHub Release
         shell: pwsh
         env:
           GH_TOKEN: ${{ github.token }}
@@ -81,7 +82,19 @@ jobs:
           $tag = 'v.0.1'
           gh release view $tag --repo $env:GITHUB_REPOSITORY *> $null
           if ($LASTEXITCODE -eq 0) {
-            Write-Host "Release $tag already exists; nothing to publish."
+            gh release edit $tag `
+              --repo $env:GITHUB_REPOSITORY `
+              --title 'Hazz Music Bingo v.0.1' `
+              --notes-file RELEASE_NOTES.md
+            if ($LASTEXITCODE -ne 0) { throw 'GitHub Release notes update failed' }
+
+            gh release upload $tag `
+              --repo $env:GITHUB_REPOSITORY `
+              --clobber `
+              'release/Hazz-Music-Bingo-v0.1-Windows-x64.zip' `
+              'release/Hazz-Music-Bingo-v0.1-Source.zip' `
+              'release/SHA256SUMS.txt'
+            if ($LASTEXITCODE -ne 0) { throw 'GitHub Release asset refresh failed' }
             exit 0
           }
 
