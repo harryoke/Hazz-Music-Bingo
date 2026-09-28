@@ -19,7 +19,7 @@ public partial class MainWindow : Window
     private GameFileService? _gameFileService;
 
     private readonly AudioClipPlayer _audio = new();
-    private readonly PrintService _printService = new();
+
 
     private readonly CardDesignSettingsService _cardDesignService = new();
     private CardDesignSettings _cardDesign = new();
@@ -69,15 +69,7 @@ public partial class MainWindow : Window
             await RefreshStatusAsync();
             FooterText.Text = $"Database: {_db.DatabasePath}";
 
-            if (_gameId.HasValue)
-            {
-                EnableGameControls(true);
-                var played =
-                    await _db.GetPlayedCountAsync(_gameId.Value);
-
-                GameStatusText.Text =
-                    $"{played} / 60 PLAYED";
-            }
+            EnableGameControls(_gameId.HasValue);
         }
         catch (Exception ex)
         {
@@ -90,31 +82,36 @@ public partial class MainWindow : Window
         }
     }
 
-    private async Task RefreshStatusAsync()
+    private async Task RefreshStatusAsync(bool checkMusic = true)
     {
+        var game = _gameId;
         var total = await _db.GetTrackCountAsync();
         LibraryCountText.Text = $"Songs indexed: {total:N0}";
-
-        if (_gameId.HasValue)
+        if (game.HasValue)
         {
-            var played =
-                await _db.GetPlayedCountAsync(_gameId.Value);
-
-            PlayedCountText.Text =
-                $"Songs played: {played} / 60";
-
-            GameStatusText.Text =
-                $"{played} / 60 PLAYED";
+            var played = await _db.GetPlayedCountAsync(game.Value);
+            var code = await _db.GetSessionCodeAsync(game.Value);
+            if (_gameId != game) return;
+            PlayedCountText.Text = $"Songs played: {played} / 60";
+            GameStatusText.Text = $"{played} / 60 PLAYED • {code}";
+            if (checkMusic)
+            {
+                var pool = await _db.GetGamePoolAsync(game.Value);
+                var issues = await Task.Run(() => MusicHealthService.Check(pool));
+                if (_gameId == game)
+                    MusicHealthText.Text = issues.Count == 0 ? "Current game: all files available" : $"Current game: {issues.Count} songs need attention — use CHECK MUSIC.";
+            }
         }
-        else
+        else if (!_gameId.HasValue)
         {
+            MusicHealthText.Text = "";
             PlayedCountText.Text = "Songs played: 0 / 60";
             GameStatusText.Text = "No active game";
         }
     }
-
     private void EnableGameControls(bool enabled)
     {
+        WinnerButton.IsEnabled = enabled;
         PlayNextButton.IsEnabled = enabled;
         StopButton.IsEnabled = enabled;
         PlayedSongsButton.IsEnabled = enabled;
@@ -225,6 +222,7 @@ public partial class MainWindow : Window
 
         try
         {
+            IsEnabled = false;
             StopPlaybackUi();
             _lastTrack = null;
 
@@ -258,6 +256,7 @@ public partial class MainWindow : Window
                 MessageBoxButton.OK,
                 MessageBoxImage.Warning);
         }
+        finally { IsEnabled = true; }
     }
 
     private async void PlayNext_Click(
@@ -311,7 +310,7 @@ public partial class MainWindow : Window
                         return;
                     _lastTrack = track;
                     ShowCurrentTrack(track);
-                    await RefreshStatusAsync();
+                    await RefreshStatusAsync(checkMusic: false);
                 });
 
             // An older Repeat/Play task must never overwrite the status
@@ -572,12 +571,6 @@ public partial class MainWindow : Window
         if (!_gameId.HasValue || _cardGenerator is null)
             return;
 
-        var countWindow =
-            new CardCountWindow { Owner = this };
-
-        if (countWindow.ShowDialog() != true)
-            return;
-
         try
         {
             PrintCardsButton.IsEnabled = false;
@@ -589,11 +582,10 @@ public partial class MainWindow : Window
             var cards =
                 await _db.GetCardsAsync(
                     _gameId.Value,
-                    countWindow.CardCount);
+                    60);
 
-            _printService.PrintCards(
-                cards,
-                _cardDesign);
+            var code = await _db.GetSessionCodeAsync(_gameId.Value);
+            new PrintCardsWindow(cards, _cardDesign, code) { Owner = this }.ShowDialog();
         }
         catch (Exception ex)
         {
@@ -689,6 +681,7 @@ public partial class MainWindow : Window
 
         try
         {
+            IsEnabled = false;
             StopPlaybackUi();
 
             var result =
@@ -740,6 +733,7 @@ public partial class MainWindow : Window
                 MessageBoxButton.OK,
                 MessageBoxImage.Error);
         }
+        finally { IsEnabled = true; }
     }
 
     private async void ResetGame_Click(
@@ -768,6 +762,7 @@ public partial class MainWindow : Window
 
         try
         {
+            IsEnabled = false;
             StopPlaybackUi();
 
             await _gameService.ResetGameProgressAsync(
@@ -785,7 +780,7 @@ public partial class MainWindow : Window
             _audience?.ShowTrack(null);
 
             await RefreshStatusAsync();
-            GameStatusText.Text = "0 / 60 PLAYED";
+
 
             MessageBox.Show(
                 this,
@@ -805,50 +800,71 @@ public partial class MainWindow : Window
                 MessageBoxButton.OK,
                 MessageBoxImage.Error);
         }
+        finally { IsEnabled = true; }
     }
 
-    private async void NewGame_Click(
-        object sender,
-        RoutedEventArgs e)
+    private async void NewGame_Click(object sender, RoutedEventArgs e)
     {
-        if (!_gameId.HasValue)
-            return;
-
-        var played =
-            await _db.GetPlayedCountAsync(
-                _gameId.Value);
-
-        var answer = MessageBox.Show(
-            this,
-            $"Close the current game?\n\n" +
-            $"Current game: {played} / 60 songs played.\n\n" +
-            "The game remains in the app database. " +
-            "Use Save Game first if you want a portable .hmbgame copy.",
-            "Close game",
-            MessageBoxButton.YesNo,
-            MessageBoxImage.Warning);
-
-        if (answer != MessageBoxResult.Yes)
-            return;
-
-        StopPlaybackUi();
-
-        await _db.CloseActiveGameAsync();
-
-        _gameId = null;
-        _lastTrack = null;
-
-        CurrentTitleText.Text = "Ready";
-        CurrentArtistText.Text = "";
-        GameStatusText.Text = "No active game";
-
-        EnableGameControls(false);
-
-        _audience?.ShowTrack(null);
-
-        await RefreshStatusAsync();
+        if (!_gameId.HasValue) return;
+        try
+        {
+            var played = await _db.GetPlayedCountAsync(_gameId.Value);
+            if (MessageBox.Show(this, $"Close this game ({played}/60 played)?\n\nYou can reopen it from GAME HISTORY. Save a .hmbgame file for a portable copy.",
+                "Close game", MessageBoxButton.YesNo, MessageBoxImage.Question) != MessageBoxResult.Yes) return;
+            IsEnabled = false;
+            StopPlaybackUi();
+            await _db.CloseActiveGameAsync();
+            _gameId = null; _lastTrack = null;
+            CurrentTitleText.Text = "Ready"; CurrentArtistText.Text = "";
+            EnableGameControls(false);
+            _audience?.ShowTrack(null);
+            await RefreshStatusAsync();
+        }
+        catch (Exception ex) { MessageBox.Show(this, ex.Message, "Could not close game"); }
+        finally { IsEnabled = true; }
+    }
+    private async void CheckMusic_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            StopPlaybackUi();
+            new MusicHealthWindow(_db, _gameId) { Owner = this }.ShowDialog();
+            await RefreshStatusAsync();
+        }
+        catch (Exception ex) { MessageBox.Show(this, ex.Message, "Music check"); }
     }
 
+    private async void Winner_Click(object sender, RoutedEventArgs e)
+    {
+        if (!_gameId.HasValue) return;
+        try
+        {
+            var code = await _db.GetSessionCodeAsync(_gameId.Value);
+            new WinnerWindow(_db, _gameId.Value, code) { Owner = this }.ShowDialog();
+        }
+        catch (Exception ex) { MessageBox.Show(this, ex.Message, "Winner check"); }
+    }
+
+    private async void GameHistory_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            var window = new GameHistoryWindow(_db) { Owner = this };
+            if (window.ShowDialog() != true || !window.SelectedGameId.HasValue) return;
+            IsEnabled = false;
+            StopPlaybackUi();
+            await _db.ReopenGameAsync(window.SelectedGameId.Value);
+            _gameId = window.SelectedGameId;
+            _lastTrack = null;
+            CurrentTitleText.Text = "Ready";
+            CurrentArtistText.Text = "";
+            _audience?.ShowTrack(null);
+            EnableGameControls(true);
+            await RefreshStatusAsync();
+        }
+        catch (Exception ex) { MessageBox.Show(this, ex.Message, "Could not recover game"); }
+        finally { IsEnabled = true; }
+    }
     private void StopPlaybackUi()
     {
         ++_playbackOperationId;

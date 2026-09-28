@@ -61,11 +61,6 @@ echo Output:
 echo   "%OUT%"
 echo.
 
-if exist "%OUT%" (
-    echo Removing old standalone output...
-    rmdir /s /q "%OUT%"
-)
-
 mkdir "%OUT%" >nul 2>nul
 
 echo Restoring packages...

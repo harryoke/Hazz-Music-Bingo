@@ -11,12 +11,13 @@ public sealed class GameService
 
     public async Task<long> GenerateGameAsync(int poolSize = 60)
     {
-        var total = await _db.GetTrackCountAsync();
-        if (total < poolSize)
+        var library = await _db.GetAllTracksAsync();
+        var available = await Task.Run(() => library.Where(MusicHealthService.IsAvailable).ToList());
+        if (available.Count < poolSize)
             throw new InvalidOperationException(
-                $"At least {poolSize} indexed songs are required. Currently indexed: {total}.");
+                $"At least {poolSize} available, successfully scanned songs are required. Found {available.Count} of {library.Count}. Use CHECK MUSIC to locate missing or unreadable files.");
 
-        var tracks = await _db.GetRandomTracksAsync(poolSize);
+        var tracks = available.OrderBy(_ => Random.Shared.Next()).Take(poolSize).ToList();
         if (tracks.Count != poolSize)
             throw new InvalidOperationException("The requested game pool could not be created.");
 

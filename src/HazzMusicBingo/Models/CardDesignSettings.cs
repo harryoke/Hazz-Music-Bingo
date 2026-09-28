@@ -27,6 +27,12 @@ public sealed class CardDesignSettings
     public bool UseTextOutline { get; set; } = false;
     public string TextOutlineColor { get; set; } = "#000000";
     public double TextOutlineWidth { get; set; } = 2.0;
+    public string FooterText { get; set; } = "Listen • Mark your songs • Call BINGO!";
+    public double GridLineWidth { get; set; } = 1;
+    public double CellPadding { get; set; } = 8;
+    public bool AlternateRows { get; set; }
+    public string AlternateRowColor { get; set; } = "#EEF2FF";
+    public bool LeftAlignSongs { get; set; }
 
     public CardDesignSettings Clone() => new()
     {
@@ -49,6 +55,12 @@ public sealed class CardDesignSettings
         BoldSongText = BoldSongText,
         UseTextOutline = UseTextOutline,
         TextOutlineColor = TextOutlineColor,
-        TextOutlineWidth = TextOutlineWidth
+        TextOutlineWidth = TextOutlineWidth,
+        FooterText = FooterText,
+        GridLineWidth = GridLineWidth,
+        CellPadding = CellPadding,
+        AlternateRows = AlternateRows,
+        AlternateRowColor = AlternateRowColor,
+        LeftAlignSongs = LeftAlignSongs
     };
 }

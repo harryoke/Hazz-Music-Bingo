@@ -3,6 +3,7 @@
 public sealed class GameArchive
 {
     public int FormatVersion { get; set; } = 1;
+    public string? SessionCode { get; set; }
     public DateTime SavedUtc { get; set; } = DateTime.UtcNow;
     public List<GameArchiveTrack> Tracks { get; set; } = new();
     public List<GameArchiveCard> Cards { get; set; } = new();

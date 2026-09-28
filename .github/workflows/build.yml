@@ -1,0 +1,39 @@
+name: Windows build and regression checks
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: '8.0.x'
+      - name: Build
+        run: dotnet build HazzMusicBingo.sln -c Release
+      - name: Regression and WPF rendering checks
+        run: dotnet run --project tests/HazzMusicBingo.Regression -c Release --no-build -- artifacts/screenshots
+      - name: Dependency audit
+        run: dotnet list src/HazzMusicBingo/HazzMusicBingo.csproj package --vulnerable --include-transitive
+      - name: Publish Windows executable
+        run: dotnet publish src/HazzMusicBingo/HazzMusicBingo.csproj -c Release -r win-x64 --self-contained true -p:DebugType=None -p:DebugSymbols=false -o artifacts/windows
+      - name: Test packaged executable
+        shell: pwsh
+        run: |
+          $report = Join-Path $PWD 'artifacts/standalone-test.json'
+          $process = Start-Process -FilePath 'artifacts/windows/HazzMusicBingo.exe' -ArgumentList @('--self-test', $report) -WindowStyle Hidden -PassThru
+          if (-not $process.WaitForExit(60000)) { throw 'Standalone test timed out' }
+          if ($process.ExitCode -ne 0) { throw "Standalone test failed: $($process.ExitCode)" }
+          Get-Content $report
+      - uses: actions/upload-artifact@v7
+        # Upload build output and evidence even if a later check fails.
+        if: always()
+        with:
+          name: windows-build-and-render-checks
+          path: artifacts/

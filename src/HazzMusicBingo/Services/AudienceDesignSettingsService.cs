@@ -1,4 +1,4 @@
-﻿using HazzMusicBingo.Models;
+using HazzMusicBingo.Models;
 using System.IO;
 using System.Text.Json;
 
@@ -10,9 +10,7 @@ public sealed class AudienceDesignSettingsService
 
     public AudienceDesignSettingsService()
     {
-        var folder = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "HazzMusicBingo");
+        var folder = AppStorage.Folder;
 
         Directory.CreateDirectory(folder);
         _settingsPath = Path.Combine(folder, "audience-design.json");

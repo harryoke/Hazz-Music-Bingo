@@ -2,9 +2,11 @@ using HazzMusicBingo.Data;
 using HazzMusicBingo.Models;
 using HazzMusicBingo.Services;
 using System.Text.Json;
+using System.IO;
 
 var folder = Path.Combine(Path.GetTempPath(), "HazzMusicBingo-tests-" + Guid.NewGuid().ToString("N"));
 Directory.CreateDirectory(folder);
+Environment.SetEnvironmentVariable("HAZZ_MUSIC_BINGO_DATA_DIR", Path.Combine(folder, "profile"));
 var checks = 0;
 void Check(bool condition, string message)
 {
@@ -22,7 +24,7 @@ var save = Path.Combine(folder, "test.hmbgame");
 long game = 0;
 for (var iteration = 0; iteration < 20; iteration++)
 {
-    game = await games.GenerateGameAsync();
+    game = await db.CreateGameAsync(await db.GetRandomTracksAsync(60));
     await generator.EnsureStrictCardsExistAsync(game);
     var cards = await db.GetCardsAsync(game, 60);
     Check(cards.Count == 60, "Card count");
@@ -104,4 +106,6 @@ using (var player = new AudioClipPlayer())
     catch (Exception ex) when (ex.Message != "Missing audio unexpectedly played") { checks++; }
     Check(!started && !player.IsPlaying, "Failed audio must not notify started");
 }
+checks += await FeatureTests.Run(folder);
+checks += await UiTests.Run(args.FirstOrDefault() ?? Path.Combine(folder, "screenshots"));
 Console.WriteLine($"PASS: {checks} checks; 20 generated card sets; isolated database at {folder}");

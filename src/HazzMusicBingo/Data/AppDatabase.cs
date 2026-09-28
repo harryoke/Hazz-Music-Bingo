@@ -4,16 +4,14 @@ using HazzMusicBingo.Models;
 
 namespace HazzMusicBingo.Data;
 
-public sealed class AppDatabase
+public sealed partial class AppDatabase
 {
     public string DatabasePath { get; }
     private string ConnectionString => new SqliteConnectionStringBuilder { DataSource = DatabasePath, ForeignKeys = true }.ToString();
 
     public AppDatabase(string? databasePath = null)
     {
-        var folder = databasePath is not null ? Path.GetDirectoryName(Path.GetFullPath(databasePath))! : Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "HazzMusicBingo");
+        var folder = databasePath is not null ? Path.GetDirectoryName(Path.GetFullPath(databasePath))! : HazzMusicBingo.Services.AppStorage.Folder;
 
         Directory.CreateDirectory(folder);
         DatabasePath = databasePath is null ? Path.Combine(folder, "hazzmusicbingo.db") : Path.GetFullPath(databasePath);
@@ -81,6 +79,7 @@ public sealed class AppDatabase
         await using var cmd = cn.CreateCommand();
         cmd.CommandText = sql;
         await cmd.ExecuteNonQueryAsync();
+        await EnsureSessionCodesAsync(cn);
     }
 
     public async Task UpsertTrackAsync(
@@ -159,11 +158,12 @@ public sealed class AppDatabase
         {
             cmd.Transaction = (SqliteTransaction)tx;
             cmd.CommandText = """
-            INSERT INTO Games(CreatedUtc, Status, PoolSize)
-            VALUES($created, 'Active', $pool);
+            INSERT INTO Games(CreatedUtc, Status, PoolSize, SessionCode)
+            VALUES($created, 'Active', $pool, $code);
             SELECT last_insert_rowid();
             """;
             cmd.Parameters.AddWithValue("$created", DateTime.UtcNow.ToString("O"));
+            cmd.Parameters.AddWithValue("$code", Guid.NewGuid().ToString("N")[..12].ToUpperInvariant());
             cmd.Parameters.AddWithValue("$pool", tracks.Count);
             gameId = (long)(await cmd.ExecuteScalarAsync() ?? 0L);
         }
@@ -518,7 +518,7 @@ public sealed class AppDatabase
     }
 
     public async Task<long> CreateGameWithStateAsync(
-        IReadOnlyList<GameTrackState> states, IReadOnlyList<BingoCard>? cards = null)
+        IReadOnlyList<GameTrackState> states, IReadOnlyList<BingoCard>? cards = null, string? sessionCode = null)
     {
         if (states.Count == 0)
             throw new InvalidOperationException("The saved game contains no tracks.");
@@ -540,11 +540,12 @@ public sealed class AppDatabase
         {
             cmd.Transaction = (SqliteTransaction)tx;
             cmd.CommandText = """
-            INSERT INTO Games(CreatedUtc, Status, PoolSize)
-            VALUES($created, 'Active', $pool);
+            INSERT INTO Games(CreatedUtc, Status, PoolSize, SessionCode)
+            VALUES($created, 'Active', $pool, $code);
             SELECT last_insert_rowid();
             """;
             cmd.Parameters.AddWithValue("$created", DateTime.UtcNow.ToString("O"));
+            cmd.Parameters.AddWithValue("$code", sessionCode ?? Guid.NewGuid().ToString("N")[..12].ToUpperInvariant());
             cmd.Parameters.AddWithValue("$pool", states.Count);
             gameId = (long)(await cmd.ExecuteScalarAsync() ?? 0L);
         }

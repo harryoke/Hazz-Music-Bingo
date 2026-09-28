@@ -7,6 +7,8 @@ public static class GameArchiveValidator
 {
     public static void Validate(GameArchive archive)
     {
+        if (archive.SessionCode is not null && (archive.SessionCode.Length != 12 || !archive.SessionCode.All(Uri.IsHexDigit)))
+            throw new InvalidDataException("The saved game's session code is invalid.");
         if (archive.FormatVersion != 1)
             throw new InvalidDataException("This saved-game format is not supported.");
         if (archive.Tracks is null || archive.Tracks.Count != 60)

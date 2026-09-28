@@ -1,3 +1,5 @@
+Historical note: this review predates the v.0.1 feature release. Current behaviour and dependencies are documented in USER_GUIDE.md and DEVELOPMENT.md.
+
 # Hazz Music Bingo — code review and fixes
 
 Reviewed source: v0.2.15. The supplied ZIP was left unchanged. The accompanying reviewed-source ZIP contains the fixes and a repeatable regression runner. Existing game-file version 1 and the intentional reshuffle-on-load behaviour are retained.

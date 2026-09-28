@@ -1,4 +1,4 @@
-﻿using HazzMusicBingo.Models;
+using HazzMusicBingo.Models;
 using HazzMusicBingo.Controls;
 using HazzMusicBingo.Services;
 using Microsoft.Win32;
@@ -39,68 +39,19 @@ public partial class CardDesignWindow : Window
             .Select(f => f.Source)
             .ToList();
 
-        BuildPreviewCells();
+
         LoadControls();
         _loading = false;
         UpdatePreview();
     }
 
-    private void BuildPreviewCells()
-    {
-        var samples = new[]
-        {
-            "Take On Me\n- a-ha",
-            "Africa\n- Toto",
-            "Billie Jean\n- Michael Jackson",
-            "Purple Rain\n- Prince",
-            "Jump\n- Van Halen",
-            "Beat It\n- Michael Jackson",
-            "Like a Virgin\n- Madonna",
-            "The Final Countdown\n- Europe",
-            "Tainted Love\n- Soft Cell",
-            "Under Pressure\n- Queen & David Bowie",
-            "Careless Whisper\n- George Michael",
-            "Thriller\n- Michael Jackson",
-            "Sweet Child o' Mine\n- Guns N' Roses",
-            "Eye of the Tiger\n- Survivor",
-            "Summer of '69\n- Bryan Adams",
-            "Every Breath You Take\n- The Police",
-            "When Doves Cry\n- Prince",
-            "Don't Stop Believin'\n- Journey",
-            "Girls Just Want to Have Fun\n- Cyndi Lauper",
-            "Flashdance\n- Irene Cara",
-            "Sweet Dreams\n- Eurythmics",
-            "With or Without You\n- U2",
-            "Livin' on a Prayer\n- Bon Jovi",
-            "Walk This Way\n- Run-D.M.C.",
-            "I Wanna Dance with Somebody\n- Whitney Houston"
-        };
-
-        foreach (var sample in samples)
-        {
-            var border = new Border
-            {
-                BorderThickness = new Thickness(0.6),
-                Padding = new Thickness(4)
-            };
-
-            border.Child = new OutlinedTextBlock
-            {
-                Text = sample,
-                Tag = sample,
-                TextAlignment = TextAlignment.Center,
-                TextWrapping = TextWrapping.Wrap,
-                HorizontalAlignment = WpfHorizontalAlignment.Center,
-                VerticalAlignment = WpfVerticalAlignment.Center,
-                MaxLines = 4
-            };
-
-            PreviewGrid.Children.Add(border);
-        }
-    }
-
     private void LoadControls()
     {
+        FooterBox.Text = _working.FooterText;
+        GridWidthBox.Text = _working.GridLineWidth.ToString("0.##");
+        PaddingBox.Text = _working.CellPadding.ToString("0.##");
+        AlternateRowsBox.IsChecked = _working.AlternateRows;
+        LeftAlignBox.IsChecked = _working.LeftAlignSongs;
         TitleBox.Text = _working.Title;
         HeaderBox.Text = _working.HeaderText;
         FontBox.SelectedItem = _working.FontFamilyName;
@@ -132,16 +83,24 @@ public partial class CardDesignWindow : Window
 
         _working.HeaderText = HeaderBox.Text.Trim();
 
-        if (!string.IsNullOrWhiteSpace(FontBox.Text))
-            _working.FontFamilyName = FontBox.Text;
+        // SelectionChanged can fire before ComboBox.Text has caught up.
+        if (FontBox.SelectedItem is string selectedFont)
+            _working.FontFamilyName = selectedFont;
+        _working.FooterText = FooterBox.Text.Trim();
+        _working.AlternateRows = AlternateRowsBox.IsChecked == true;
+        _working.LeftAlignSongs = LeftAlignBox.IsChecked == true;
+        if (double.TryParse(GridWidthBox.Text, out var gridWidth) && double.IsFinite(gridWidth))
+            _working.GridLineWidth = Math.Clamp(gridWidth, .25, 4);
+        if (double.TryParse(PaddingBox.Text, out var padding) && double.IsFinite(padding))
+            _working.CellPadding = Math.Clamp(padding, 2, 16);
 
-        if (double.TryParse(TitleSizeBox.Text, out var titleSize))
+        if (double.TryParse(TitleSizeBox.Text, out var titleSize) && double.IsFinite(titleSize))
             _working.TitleFontSize = Math.Clamp(titleSize, 12, 72);
 
-        if (double.TryParse(HeaderSizeBox.Text, out var headerSize))
+        if (double.TryParse(HeaderSizeBox.Text, out var headerSize) && double.IsFinite(headerSize))
             _working.HeaderFontSize = Math.Clamp(headerSize, 10, 48);
 
-        if (double.TryParse(CellSizeBox.Text, out var cellSize))
+        if (double.TryParse(CellSizeBox.Text, out var cellSize) && double.IsFinite(cellSize))
             _working.CellFontSize = Math.Clamp(cellSize, 8, 32);
 
         _working.ShowBingoLetters = ShowBingoLettersBox.IsChecked == true;
@@ -149,7 +108,7 @@ public partial class CardDesignWindow : Window
         _working.BoldSongText = BoldSongsBox.IsChecked == true;
         _working.UseTextOutline = OutlineTextBox.IsChecked == true;
 
-        if (double.TryParse(OutlineWidthBox.Text, out var outlineWidth))
+        if (double.TryParse(OutlineWidthBox.Text, out var outlineWidth) && double.IsFinite(outlineWidth))
             _working.TextOutlineWidth = Math.Clamp(outlineWidth, 0, 12);
 
         _working.CellBackgroundOpacity = CellOpacitySlider.Value;
@@ -167,97 +126,60 @@ public partial class CardDesignWindow : Window
 
     private void UpdatePreview()
     {
-        var font = new WpfFontFamily(_working.FontFamilyName);
-
-        PreviewTitle.Text = _working.Title;
-        PreviewTitle.FontFamily = font;
-        PreviewTitle.FontSize = _working.TitleFontSize;
-        PreviewTitle.Foreground = BrushFromHex(_working.TitleColor);
-        PreviewTitle.Stroke = BrushFromHex(_working.TextOutlineColor);
-        PreviewTitle.StrokeThickness =
-            _working.UseTextOutline ? _working.TextOutlineWidth : 0;
-
-        PreviewHeader.Text = _working.HeaderText;
-        PreviewHeader.FontFamily = font;
-        PreviewHeader.FontSize = _working.HeaderFontSize;
-        PreviewHeader.Foreground = BrushFromHex(_working.TextColor);
-        PreviewHeader.Stroke = BrushFromHex(_working.TextOutlineColor);
-        PreviewHeader.StrokeThickness =
-            _working.UseTextOutline ? _working.TextOutlineWidth : 0;
-        PreviewHeader.Visibility =
-            string.IsNullOrWhiteSpace(_working.HeaderText)
-                ? Visibility.Collapsed
-                : Visibility.Visible;
-
-        PreviewLetters.Visibility =
-            _working.ShowBingoLetters ? Visibility.Visible : Visibility.Collapsed;
-
-        foreach (OutlinedTextBlock letter in PreviewLetters.Children)
-        {
-            letter.FontFamily = font;
-            letter.Foreground = BrushFromHex(_working.TitleColor);
-            letter.Stroke = BrushFromHex(_working.TextOutlineColor);
-            letter.StrokeThickness =
-                _working.UseTextOutline ? _working.TextOutlineWidth : 0;
-        }
-
-        PreviewPage.Background = BrushFromHex(_working.PageBackgroundColor);
-
-        if (!string.IsNullOrWhiteSpace(_working.BackgroundImagePath)
-            && File.Exists(_working.BackgroundImagePath))
-        {
-            try
-            {
-                var bitmap = new BitmapImage();
-                bitmap.BeginInit();
-                bitmap.CacheOption = BitmapCacheOption.OnLoad;
-                bitmap.UriSource = new Uri(_working.BackgroundImagePath, UriKind.Absolute);
-                bitmap.EndInit();
-                bitmap.Freeze();
-
-                PreviewPage.Background = new ImageBrush(bitmap)
-                {
-                    Stretch = Stretch.Uniform,
-                    Opacity = _working.BackgroundImageOpacity
-                };
-            }
-            catch
-            {
-                PreviewPage.Background = BrushFromHex(_working.PageBackgroundColor);
-            }
-        }
-
-        foreach (Border border in PreviewGrid.Children)
-        {
-            border.BorderBrush = BrushFromHex(_working.GridLineColor);
-
-            var cellBrush = BrushFromHex(_working.CellBackgroundColor);
-            cellBrush.Opacity = _working.CellBackgroundOpacity;
-            border.Background = cellBrush;
-
-            if (border.Child is OutlinedTextBlock text)
-            {
-                var fullSample = text.Tag?.ToString() ?? text.Text;
-                text.Text = _working.ShowArtist
-                    ? fullSample
-                    : fullSample.Split('\n')[0];
-
-                text.FontFamily = font;
-                text.FontSize = _working.CellFontSize;
-                text.Foreground = BrushFromHex(_working.TextColor);
-                text.FontWeight =
-                    _working.BoldSongText ? FontWeights.Bold : FontWeights.Normal;
-                text.Stroke = BrushFromHex(_working.TextOutlineColor);
-                text.StrokeThickness =
-                    _working.UseTextOutline
-                        ? _working.TextOutlineWidth
-                        : 0;
-            }
-        }
-
+        var samples = new[] { "Take On Me", "Africa", "Billie Jean", "Purple Rain", "Jump",
+            "Beat It", "Like a Virgin", "The Final Countdown", "Tainted Love", "Under Pressure",
+            "Careless Whisper", "Thriller", "Sweet Child o' Mine", "Eye of the Tiger", "Summer of '69",
+            "Every Breath You Take", "When Doves Cry", "Don't Stop Believin'", "Girls Just Want to Have Fun", "Flashdance",
+            "Sweet Dreams", "With or Without You", "Livin' on a Prayer", "Walk This Way", "I Wanna Dance with Somebody" };
+        var artists = new[] { "a-ha", "Toto", "Michael Jackson", "Prince", "Van Halen", "Michael Jackson", "Madonna",
+            "Europe", "Soft Cell", "Queen & David Bowie", "George Michael", "Michael Jackson", "Guns N' Roses", "Survivor",
+            "Bryan Adams", "The Police", "Prince", "Journey", "Cyndi Lauper", "Irene Cara", "Eurythmics", "U2", "Bon Jovi",
+            "Run-D.M.C.", "Whitney Houston" };
+        var card = new BingoCard { CardNumber = 1, Squares = samples.Select((title, i) =>
+            new Track { Id = i + 1, Title = title, Artist = artists[i] }).ToList() };
+        CardPreview.Content = PrintService.CreateCardVisual(card, _working);
         RefreshColourButtons();
     }
 
+    private void ApplyTheme_Click(object sender, RoutedEventArgs e)
+    {
+        ReadControls();
+        _working.PageBackgroundColor = "#FFFFFF";
+        _working.CellBackgroundColor = "#FFFFFF";
+        _working.TextColor = _working.TitleColor = _working.GridLineColor = "#172033";
+        _working.AlternateRowColor = "#EEF2FF";
+        _working.AlternateRows = true;
+        _working.BackgroundImagePath = "";
+        _working.UseTextOutline = false;
+        if (ThemeBox.SelectedIndex == 1)
+        {
+            _working.PageBackgroundColor = "#172033";
+            _working.TextColor = "#FFFFFF";
+            _working.TitleColor = "#F6CE76";
+            _working.CellBackgroundColor = "#23334D";
+            _working.AlternateRowColor = "#30415B";
+            _working.GridLineColor = "#F6CE76";
+        }
+        else if (ThemeBox.SelectedIndex == 2)
+        {
+            _working.PageBackgroundColor = "#FFF5FC";
+            _working.TitleColor = "#6D28D9";
+            _working.AlternateRowColor = "#F2E8FF";
+            _working.GridLineColor = "#9C71CF";
+        }
+        else if (ThemeBox.SelectedIndex == 3)
+        {
+            _working.TextColor = _working.TitleColor = _working.GridLineColor = "#000000";
+            _working.BoldSongText = true;
+            _working.CellFontSize = 22;
+            _working.AlternateRows = false;
+            _working.GridLineWidth = 2;
+        }
+        _loading = true;
+        LoadControls();
+        _loading = false;
+        UpdatePreview();
+    }
     private void RefreshColourButtons()
     {
         SetButtonSwatch(TextColourButton, _working.TextColor);

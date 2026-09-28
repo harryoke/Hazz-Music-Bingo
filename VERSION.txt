@@ -1,2 +1,1 @@
-Hazz Music Bingo v0.2.15
-Standalone win-x64 self-contained single-file publishing support.
+v.0.1

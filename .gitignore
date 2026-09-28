@@ -1,0 +1,12 @@
+**/bin/
+**/obj/
+.vs/
+STANDALONE_EXE/
+artifacts/
+*.user
+*.db
+*.db-shm
+*.db-wal
+*.hmbgame
+*.hmbdesign
+*.hmbaudience
