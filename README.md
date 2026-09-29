@@ -6,6 +6,8 @@ A Windows music-bingo host with custom 5×5 cards, print previews, an audience s
 
 [Download Windows x64](https://github.com/harryoke/Hazz-Music-Bingo/releases/tag/v.0.3) · [Quick start](docs/QUICK_START.md) · [User guide](docs/USER_GUIDE.md) · [Build and development](docs/DEVELOPMENT.md) · [Testing](docs/TESTING.md) · [Changes](CHANGELOG.md)
 
+[Download the complete illustrated PDF manual](https://github.com/harryoke/Hazz-Music-Bingo/releases/download/v.0.3/Hazz_Music_Bingo_v0.3_Complete_Manual.pdf) — 31 pages covering player rules, hosting, themes, printing, recovery, card randomisation and the game engine's maths.
+
 ## Copyright and licence
 
 Copyright © 2026 Hazz Karaoke. Free use includes paid shows and business use. Unchanged copies may be shared free with all branding and notices intact. Redistribution of renamed, rebranded or modified versions requires written permission. Third-party licences and statutory rights remain unaffected. See [full licence terms](LICENSE.txt). This is source-available software, not an open-source licence.
