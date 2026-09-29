@@ -59,3 +59,7 @@ For installation, music relinking, all design/printing options, recovery and tro
 5. Repeat for up to eight games. Click a button to switch; switching back resumes progress.
 
 Right-click a button to edit it or store your current audience style. Changes to a button's theme do not reset songs. Use your own period artwork and installed fonts for decade games.
+
+## Keep a decade game within its own folder
+
+Scan your 70s folder. Under **GAME**, confirm **MUSIC SOURCE FOR NEW GAME** shows that folder, choose whether to include subfolders, then generate. You can also use **Choose folder…** to select any previously scanned folder. At least 60 playable songs are required in that selection. Save the completed game and assign it to your 1970s button. **All music** returns to the whole library; existing saved games are never changed by this selector.

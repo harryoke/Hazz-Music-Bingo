@@ -32,3 +32,4 @@ Hardware-dependent audio, physical printing and multi-monitor rehearsal remain r
 - Assignments own copies of game saves and artwork; switching resumes local progress and applies the assigned theme.
 - Added button persistence, validation and regression coverage without changing existing saved-game schemas.
 - Added independent audience winning-message font, size, colour, bold and italic controls with live preview and theme persistence.
+- Added folder-only game generation with optional subfolders. A successful scan selects that folder for new games; All music restores whole-library selection. Insufficient selections never pull in songs from elsewhere.

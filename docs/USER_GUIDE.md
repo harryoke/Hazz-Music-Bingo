@@ -183,3 +183,13 @@ The header screenshot uses example assignments; the eight buttons start empty so
 At the top of **AUDIENCE SCREEN DESIGN**, use **WINNING RULE / WIN ANNOUNCEMENT** to choose a separate message font, size (12–80), colour, bold and italic. The preview shows “WE ARE PLAYING FOR A FULL HOUSE”. The same style is used for Line, Four Corners, Full House and their WON messages, without changing the song title or artist style. Select **Use Design** to apply it.
 
 These controls are also available through a game button's **Audience theme…** editor. They travel with that button's theme and audience-design preset files. If you change them through the main audience designer, right-click the game button and choose **Store current audience style** to retain them there. Older themes without these fields retain the previous font/colour fallback and 34-point bold text.
+
+## Generate a game from one music folder
+
+Under **GAME → MUSIC SOURCE FOR NEW GAME**, click **Choose folder…** and select a folder you have already scanned. Leave **Include subfolders** ticked to include its child folders, or untick it for files directly inside that folder. Then click **GENERATE 60-SONG GAME**. Generation uses only indexed, available songs within that selection. A similarly named neighbouring folder is not included.
+
+A successful **SCAN MUSIC FOLDER** automatically selects the scanned folder, with subfolders included, for the next new game. The rest of the indexed library is retained. **All music** restores generation from the complete scanned library. The selector starts at All scanned music when the app restarts, so confirm it before generating a new game.
+
+For a 1970s game: scan your 70s folder, confirm that path is shown as the source, generate the game, create/print its cards, and save a `.hmbgame` file. Assign that save to your 1970s game button and set its audience theme. The saved game's exact song pool is already locked; switching buttons or changing the generation source does not change existing games.
+
+The selected folder needs at least 60 available songs with a successful scanned duration. Missing/unscanned folders or too few available songs stop generation and leave the active database game intact. No fallback songs are drawn from other folders. Choosing a folder alone does not scan it; scan first if it is new.

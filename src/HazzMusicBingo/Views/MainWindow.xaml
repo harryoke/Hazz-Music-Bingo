@@ -136,7 +136,17 @@
                         <TextBlock Text="GAME"
                                    Style="{StaticResource SectionHeading}"/>
 
+                        <TextBlock Text="MUSIC SOURCE FOR NEW GAME" FontWeight="Bold" Margin="4,10,4,4"/>
+                        <TextBox x:Name="GameSourceBox" Text="All scanned music" IsReadOnly="True" TextWrapping="Wrap" Margin="4"/>
+                        <WrapPanel>
+                            <Button Content="Choose folder…" Click="ChooseGameFolder_Click"/>
+                            <Button Content="All music" Click="AllGameMusic_Click"/>
+                        </WrapPanel>
+                        <CheckBox x:Name="IncludeGameSubfoldersBox" Content="Include subfolders" IsChecked="True" IsEnabled="False" Margin="6,4"/>
+                        <TextBlock Text="Scan the folder first. At least 60 playable songs are needed in this selection. Existing games keep their locked song pool." TextWrapping="Wrap" FontSize="12" Margin="4,4,4,8"/>
+
                         <Button x:Name="GenerateGameButton"
+                                ToolTip="Generate using the music source selected below"
                                 Content="GENERATE 60-SONG GAME"
                                 Style="{StaticResource AccentButton}"
                                 Click="GenerateGame_Click"/>

@@ -33,6 +33,22 @@ public partial class MainWindow : Window
     private CancellationTokenSource? _scanCts;
     private bool _manualStopRequested;
     private int _playbackOperationId;
+    private string? _gameSourceFolder;
+
+    private void ChooseGameFolder_Click(object sender, RoutedEventArgs e)
+    {
+        using var dialog = new Forms.FolderBrowserDialog { Description = "Choose the scanned music folder for new games", ShowNewFolderButton = false };
+        if (dialog.ShowDialog() == Forms.DialogResult.OK) SetGameSource(dialog.SelectedPath);
+    }
+
+    private void AllGameMusic_Click(object sender, RoutedEventArgs e) => SetGameSource(null);
+
+    private void SetGameSource(string? folder)
+    {
+        _gameSourceFolder = folder;
+        GameSourceBox.Text = folder ?? "All scanned music";
+        IncludeGameSubfoldersBox.IsEnabled = folder is not null;
+    }
 
     public MainWindow()
     {
@@ -174,6 +190,8 @@ public partial class MainWindow : Window
 
             ScanStatusText.Text =
                 $"Scan complete. {count:N0} music files processed.";
+            SetGameSource(scanFolder);
+            IncludeGameSubfoldersBox.IsChecked = true;
 
             await RefreshStatusAsync();
         }
@@ -217,7 +235,7 @@ public partial class MainWindow : Window
         {
             var result = MessageBox.Show(
                 this,
-                "Generating a new game will close the current game. Continue?",
+                $"Generating a new game will close the current game.\n\nMusic source: {_gameSourceFolder ?? "All scanned music"}\nInclude subfolders: {IncludeGameSubfoldersBox.IsChecked == true}\n\nContinue?",
                 "Generate new game",
                 MessageBoxButton.YesNo,
                 MessageBoxImage.Question);
@@ -233,7 +251,7 @@ public partial class MainWindow : Window
             _lastTrack = null;
 
             _gameId =
-                await _gameService.GenerateGameAsync(60);
+                await _gameService.GenerateGameAsync(60, _gameSourceFolder, IncludeGameSubfoldersBox.IsChecked == true);
 
             CurrentTitleText.Text = "Ready";
             CurrentArtistText.Text = "";
