@@ -33,3 +33,4 @@ Hardware-dependent audio, physical printing and multi-monitor rehearsal remain r
 - Added button persistence, validation and regression coverage without changing existing saved-game schemas.
 - Added independent audience winning-message font, size, colour, bold and italic controls with live preview and theme persistence.
 - Added folder-only game generation with optional subfolders. A successful scan selects that folder for new games; All music restores whole-library selection. Insufficient selections never pull in songs from elsewhere.
+- Added read-only MP3 title/artist tags (ID3v1 and ID3v2), per-field filename fallback, Unicode/multiple-artist support and rescan regression checks.

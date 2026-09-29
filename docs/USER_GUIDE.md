@@ -23,7 +23,7 @@ The host window needs at least 1120 × 680 logical pixels. A second monitor is o
 
 ## Music library and missing files
 
-Scanning indexes MP3, WAV, WMA, M4A, AAC, FLAC and OGG filenames. Actual decoding depends on Windows Media Foundation support; an extension alone does not guarantee playback. Artist and title are derived from the filename, not embedded tags. A filename such as `Artist - Song Title.mp3` gives the clearest result.
+Scanning indexes MP3, WAV, WMA, M4A, AAC, FLAC and OGG filenames. Actual decoding depends on Windows Media Foundation support; an extension alone does not guarantee playback. MP3 artist and title are read from embedded ID3 tags. Missing or unreadable tag fields fall back to the filename; a filename such as `Artist - Song Title.mp3` gives the clearest fallback. Other audio formats still use filenames. Rescan an existing folder to update its library labels. Scanning only reads tags and never edits your music files. Because song metadata is shared by saved games, rescanning can also update labels shown for their existing song IDs; do this before printing cards for an event.
 
 Scanning runs in the background. The scan button is disabled until that scan finishes; there is no separate cancel button. Closing the app requests cancellation. An inaccessible directory may stop the scan; already indexed files remain available. Scanning is additive: it does not delete old database entries when a file disappears.
 

@@ -38,7 +38,7 @@ public sealed class LibraryScanner
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var (artist, title) = FilenameMetadata.Parse(file);
+            var (artist, title) = TrackMetadataReader.Read(file);
             var duration = TryGetDuration(file);
             var ticks = File.GetLastWriteTimeUtc(file).Ticks;
 

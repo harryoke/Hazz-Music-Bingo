@@ -110,5 +110,6 @@ checks += await FeatureTests.Run(folder);
 checks += await LiveWinnerTests.Run(folder);
 checks += await GameShortcutTests.Run(folder);
 checks += await FolderSelectionTests.Run(folder);
+checks += await Mp3TagTests.Run(folder);
 checks += await UiTests.Run(args.FirstOrDefault() ?? Path.Combine(folder, "screenshots"));
 Console.WriteLine($"PASS: {checks} checks; 20 generated card sets; isolated database at {folder}");

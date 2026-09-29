@@ -34,13 +34,22 @@ internal static class ReleaseSelfTest
             using (var writer = new WaveFileWriter(wave, new WaveFormat(8000, 16, 1))) writer.Write(new byte[16000], 0, 16000);
             using (var reader = new MediaFoundationReader(wave))
                 if (reader.TotalTime.TotalMilliseconds < 900) throw new InvalidOperationException("Audio decoder failed.");
+            var taggedMp3 = Path.Combine(folder, "tag-check.mp3");
+            var id3 = new byte[128];
+            System.Text.Encoding.ASCII.GetBytes("TAG").CopyTo(id3, 0);
+            System.Text.Encoding.ASCII.GetBytes("Tag test title").CopyTo(id3, 3);
+            System.Text.Encoding.ASCII.GetBytes("Tag test artist").CopyTo(id3, 33);
+            var frames = Enumerable.Range(0, 4).SelectMany(_ => new byte[] { 255, 251, 144, 0 }.Concat(new byte[413]));
+            await File.WriteAllBytesAsync(taggedMp3, frames.Concat(id3).ToArray());
+            if (TrackMetadataReader.Read(taggedMp3) != ("Tag test artist", "Tag test title"))
+                throw new InvalidOperationException("Packaged MP3 tag reader failed.");
             using var cn = new SqliteConnection(new SqliteConnectionStringBuilder { DataSource = db.DatabasePath }.ToString());
             cn.Open(); using var cmd = cn.CreateCommand(); cmd.CommandText = "SELECT sqlite_version();";
             await File.WriteAllTextAsync(reportPath, JsonSerializer.Serialize(new
             {
                 result = "PASS", version = "0.2.0", sqliteVersion = (string?)cmd.ExecuteScalar(),
                 runtimeVersion = Environment.Version.ToString(), cards = cards.Count, sheets = document.Pages.Count,
-                checks = "SQLite native loading, card generation, WPF page rendering, archive round trip, Media Foundation WAV decoding"
+                checks = "SQLite native loading, card generation, WPF page rendering, archive round trip, Media Foundation WAV decoding, MP3 tag reading"
             }, new JsonSerializerOptions { WriteIndented = true }));
             return 0;
         }

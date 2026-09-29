@@ -30,6 +30,15 @@
     <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.31" />
     <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.1.13" />
     <PackageReference Include="NAudio" Version="2.2.1" />
+    <PackageReference Include="TagLibSharp" Version="2.3.0" />
   </ItemGroup>
 
+  <!-- Keep the LGPL tag reader replaceable in published packages. -->
+  <Target Name="KeepTagReaderExternal" BeforeTargets="GenerateSingleFileBundle" DependsOnTargets="PrepareForBundle">
+    <ItemGroup>
+      <ExternalTagReader Include="@(FilesToBundle)" Condition="'%(Filename)%(Extension)' == 'TagLibSharp.dll'" />
+      <FilesToBundle Remove="@(ExternalTagReader)" />
+    </ItemGroup>
+    <Copy SourceFiles="@(ExternalTagReader)" DestinationFolder="$(PublishDir)" />
+  </Target>
 </Project>
