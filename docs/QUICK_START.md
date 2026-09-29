@@ -1,16 +1,16 @@
 ![Hazz Music Bingo](images/hazz-music-bingo.png)
 
-# Hazz Music Bingo v.0.2 — quick start
+# Hazz Music Bingo v.0.3 — quick start
 
 ## Install
 
-Download **Hazz-Music-Bingo-v0.2-Windows-x64.zip** from the [v.0.2 release](https://github.com/harryoke/Hazz-Music-Bingo/releases/tag/v.0.2). Extract the entire ZIP into a folder, then run **HazzMusicBingo.exe**. Windows x64 is required; .NET is included. Music is not included.
+Download **Hazz-Music-Bingo-v0.3-Windows-x64.zip** from the [v.0.3 release](https://github.com/harryoke/Hazz-Music-Bingo/releases/tag/v.0.3). Extract the entire ZIP into a folder, keep `TagLibSharp.dll` beside the EXE, then run **HazzMusicBingo.exe**. Windows x64 is required; .NET is included. Music is not included.
 
 Upgrading from v.0.1? Close the old app and extract this version into a new folder. The same Windows account automatically retains its library and games. Back up the database through **GAME HISTORY / RECOVERY** before your first event with the update. Old saves open with live tracking off until you apply a sold-card range.
 
 ## Prepare the event
 
-1. **SCAN MUSIC FOLDER**: index at least 60 playable songs. Use filenames such as `Artist - Song Title.mp3`.
+1. **SCAN MUSIC FOLDER**: index at least 60 playable songs. MP3 title/artist tags are read automatically; filenames such as `Artist - Song Title.mp3` provide the fallback.
 2. **CHECK MUSIC / LOCATE FILES**: resolve missing or unreadable music.
 3. **GENERATE 60-SONG GAME**: lock the song pool for this event.
 4. **BINGO CARD DESIGN**: choose the design, then **Use Design**.

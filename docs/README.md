@@ -1,6 +1,6 @@
 ![Hazz Music Bingo](images/hazz-music-bingo.png)
 
-# Hazz Music Bingo v.0.2 documentation
+# Hazz Music Bingo v.0.3 documentation
 
 - [Quick start](QUICK_START.md): installation, event setup and the Line → Four Corners → Full House workflow.
 - [Full user guide](USER_GUIDE.md): library, cards, printing/PDF, playback, audience display, winner checking, saves, recovery and troubleshooting.

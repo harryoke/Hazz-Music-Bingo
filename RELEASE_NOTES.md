@@ -1,39 +1,42 @@
-# Hazz Music Bingo v.0.2 — live winner tracking
+# Hazz Music Bingo v.0.3 — themed game buttons and MP3 tags
 
-Host a complete Line → Four Corners → Full House game with automatic winner detection and clear audience messages.
+Prepare decade-specific music bingo games, switch between eight saved games and audience themes, and read song titles/artists directly from MP3 tags.
 
-## Downloads and quick start
+## Download and start
 
-Download **Hazz-Music-Bingo-v0.2-Windows-x64.zip**, extract it, and run **HazzMusicBingo.exe**. Windows x64 is required; .NET is included. The executable is unsigned. Music is not included.
+Download **Hazz-Music-Bingo-v0.3-Windows-x64.zip**. Extract the entire ZIP and run **HazzMusicBingo.exe**. Keep **TagLibSharp.dll** beside the executable. Windows x64 is required; .NET is included. The executable is unsigned. Music is not included.
 
-1. Scan at least 60 playable songs and check for missing files.
-2. Generate a game, design cards, then preview/print the required cards.
-3. Enter the first and last sold card numbers under PLAYING FOR and press Apply.
-4. Select Line, show the audience screen, save the game and start playing clips.
-5. Verify and acknowledge winning cards, then select Four Corners and later Full House. Do not reset songs between prizes.
+1. Scan your music folder. MP3 title and artist tags are read automatically; missing fields fall back to filenames.
+2. Under GAME, check MUSIC SOURCE FOR NEW GAME. A successful scan selects that folder; choose whether to include subfolders. At least 60 playable scanned songs are required in the selection.
+3. Generate the game, design/print its cards, apply the sold-card range and save it.
+4. Click an empty header button to assign the save, a custom label/colour and its audience theme.
+5. Play for Line, then Four Corners, then Full House. Acknowledge winners and switch rules without resetting songs.
 
-[Quick-start guide](https://github.com/harryoke/Hazz-Music-Bingo/blob/v.0.2/docs/QUICK_START.md) · [Full user guide](https://github.com/harryoke/Hazz-Music-Bingo/blob/v.0.2/docs/USER_GUIDE.md) · [Development guide](https://github.com/harryoke/Hazz-Music-Bingo/blob/v.0.2/docs/DEVELOPMENT.md)
+[Quick start](https://github.com/harryoke/Hazz-Music-Bingo/blob/v.0.3/docs/QUICK_START.md) · [Full user guide](https://github.com/harryoke/Hazz-Music-Bingo/blob/v.0.3/docs/USER_GUIDE.md) · [Development](https://github.com/harryoke/Hazz-Music-Bingo/blob/v.0.3/docs/DEVELOPMENT.md)
 
-The Windows ZIP includes the full documentation, quick start, illustrated examples, licence and third-party notices. The source ZIP contains the corresponding complete source and tests. SHA256SUMS.txt verifies both packages.
+## New in v.0.3
 
-## Changes
+- Hazz Music Bingo logo in the main GUI and documentation, plus a branded Windows icon.
+- Eight saved-game buttons with user-defined labels and colours. Each retains an audience theme and owned copies of its save/background image. Returning to a button resumes its local game progress.
+- Separate font, size, colour, bold and italic controls for WE ARE PLAYING FOR… and … WON! messages, with live preview and per-button theme persistence.
+- Folder-only game generation, with optional subfolders and an All music choice. Insufficient selections never pull songs from other folders.
+- Read-only MP3 title/artist tags: ID3v1 and ID3v2, Unicode, multiple performers and independent filename fallback. Rescan existing folders to refresh labels.
+- Updated illustrated documentation, quick start, regression coverage and third-party notices/source.
 
-- Previous Card / Next Card in Check Winning Card, with saved-number navigation and end boundaries.
-- Line means any complete horizontal OR vertical line; diagonal wins are removed. Four Corners and Full House remain.
-- Validated inclusive sold-card ranges and a visible count of cards in play.
-- Automatic detection of every qualifying card in the range as played state changes.
-- Persistent acknowledgement prevents repeated attention alerts for the same card/rule. New winners still appear.
-- Prominent selected-rule buttons and audience messages such as WE ARE PLAYING FOR A LINE and LINE WON!.
-- Progress is preserved when switching rules; current-song and played-list audience views remain available.
+## Upgrading and compatibility
 
-## Saved games and upgrades
+Close the old app and extract this package into a new folder. The same Windows account retains its normal library and history. Existing version-1 game saves remain supported. Back up your profile before an event.
 
-Close v.0.1 before launching v.0.2. The normal local library and game history are retained. Back up the database before an event. An additive GameWinningSettings table stores the rule, sold range and acknowledgements. Version-1 portable saves gain an optional Winning object; older saves retain their cards and progress and default to Line with tracking off until a range is applied. Reset clears played songs and acknowledgements while retaining the rule and range. Loading a portable file still reshuffles playback order by design; history reopening preserves it.
+Button assignments live in game-shortcuts.json, with owned saves/artwork under game-buttons/ in the app data folder. Include these alongside the database and design settings in full-profile backups. Database-only backups and portable game saves do not include button assignments. Music is referenced by path, not copied.
 
-## Validation
+The generation source starts at All scanned music after restarting: check it before generating. Existing games retain their locked song pools. Rescanning updates shared song labels, including existing game displays; do this before printing event cards. Changing the original assigned save does not change a button automatically: reassign it for a new snapshot.
 
-Windows Release build passed with zero warnings/errors. All **311 regression checks** passed, including 20 generated card sets, old saves, live winner filtering, both diagonal exclusions, progress-preserving rule switching and actual WPF navigation/acknowledgement button events. The self-contained executable passed SQLite loading, card generation, print rendering, archive round trip and Windows WAV decoding. See the included validation record for scope. Physical speakers, printer drivers and multiple displays still require an event-machine rehearsal.
+## Validation and package contents
+
+Windows Release build: zero warnings/errors. **357 regression checks passed**, including 20 independently generated card sets. Packaged executable self-test passed SQLite loading, card generation, WPF print rendering, archive round trip, Windows WAV decoding and MP3 tag reading. Dependency audit reported no known vulnerable packages. Physical speakers, printers and multiple displays still require an event-machine rehearsal.
+
+The Windows ZIP contains the EXE, required tag-reader DLL, full documentation, quick start, licence, third-party notices and library source. The Source ZIP contains this release's application source and tests. SHA256SUMS.txt provides hashes for both archives.
 
 ## Copyright and licence
 
-Copyright © 2026 Hazz Karaoke. Free use includes paid and commercial shows. Unchanged copies may be shared free with branding and notices intact. Redistribution of modified, renamed or rebranded versions requires written permission. Third-party licences remain applicable. See LICENSE.txt and THIRD_PARTY_NOTICES.md.
+Copyright © 2026 Hazz Karaoke. Free use includes paid and commercial shows. Unchanged copies may be shared free with branding/notices intact. Redistribution of modified, renamed or rebranded app versions requires written permission. Third-party rights remain applicable; TagLibSharp is separately licensed under LGPL-2.1 and remains replaceable. See LICENSE.txt and THIRD_PARTY_NOTICES.md.

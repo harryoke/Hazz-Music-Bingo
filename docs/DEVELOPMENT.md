@@ -14,7 +14,7 @@ dotnet publish src/HazzMusicBingo/HazzMusicBingo.csproj -c Release -r win-x64 --
 
 The regression runner throws on a failed assertion and returns nonzero. It is deliberately a console runner, not a `dotnet test` project. It uses unique temporary databases and sets `HAZZ_MUSIC_BINGO_DATA_DIR` before constructing any settings service. Screenshot output is optional; by default it stays in the test directory. The print viewer is briefly loaded off-screen to exercise real WPF page realization; no print job is submitted. Test directories are retained for diagnosis.
 
-The release is a self-contained, compressed single-file Windows x64 executable with native libraries extracted at runtime. Trimming is disabled for WPF/SQLite/NAudio compatibility. The original `BUILD_STANDALONE_EXE.bat` publishes to `STANDALONE_EXE`; the Visual Studio `StandaloneWin64` profile is also available.
+The release is a self-contained Windows x64 package. The compressed executable includes the runtime; TagLibSharp.dll stays alongside it as a replaceable LGPL dependency. Native libraries are extracted at runtime. Trimming is disabled for WPF/SQLite/NAudio compatibility. The original `BUILD_STANDALONE_EXE.bat` publishes to `STANDALONE_EXE`; the Visual Studio `StandaloneWin64` profile is also available.
 
 ## Architecture
 
@@ -67,4 +67,14 @@ The requested first public release is named **Hazz Music Bingo v.0.1**, tag **v.
 
 Version-1 archives add an optional Winning object. Validation precedes mutation; winning settings are inserted in the same transaction as game state and cards. Reset clears acknowledgements transactionally with played state. Rule changes only update settings. Older apps ignore the optional archive object and will lose those settings if they resave it.
 
-The current release is **v.0.2**, tag **v.0.2**, application version **0.2.0**. The original public release remains at tag **v.0.1**. The legacy release-v0.1 workflow must not be used to publish newer versions: create their own versioned tag and assets after validation. Normal main-branch CI does not publish releases.
+The current release is **v.0.3**, tag **v.0.3**, application version **0.3.0**. The original public release remains at tag **v.0.1**. The legacy release-v0.1 workflow must not be used to publish newer versions: create their own versioned tag and assets after validation. Normal main-branch CI does not publish releases.
+
+## v.0.3 source selection, shortcuts and tags
+
+GameService optionally filters indexed paths to a selected folder before availability checks. Matching is case-insensitive with a directory boundary; subfolders are optional. Insufficient pools never fall back to the whole library. A successful scan updates the host's selection; the selector resets to the whole library at startup. Saved game pools are unchanged.
+
+GameShortcutService stores eight slots in game-shortcuts.json and owns save/artwork copies in game-buttons/. Each slot includes label, colour, audience settings and a resumed game ID/session code. Initial activation imports its snapshot; later activation reopens the local record and preserves progress. Include the JSON, owned files and database in full-profile backups.
+
+AudienceDesignSettings adds optional winning-message font/colour and size/bold/italic fields. Missing fields preserve prior styling defaults; Clone includes the new values for per-button themes.
+
+TrackMetadataReader uses unmodified TagLibSharp 2.3.0 for read-only MP3 title/performer metadata. Missing fields fall back independently to FilenameMetadata; other formats retain filename metadata. Scanning still validates duration with Windows Media Foundation. TagLibSharp.dll is excluded from the single-file bundle in KeepTagReaderExternal and copied alongside the executable. Always distribute it, its licence/notices and the corresponding source archive in licenses/.

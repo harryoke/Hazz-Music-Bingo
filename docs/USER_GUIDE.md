@@ -1,10 +1,10 @@
 ![Hazz Music Bingo](images/hazz-music-bingo.png)
 
-# Hazz Music Bingo v.0.2 — user guide
+# Hazz Music Bingo v.0.3 — user guide
 
 ## Install and start
 
-Download the Windows x64 ZIP from the [v.0.2 release](https://github.com/harryoke/Hazz-Music-Bingo/releases/tag/v.0.2), extract it, and run **HazzMusicBingo.exe**. The .NET runtime is included. The application is unsigned. Windows audio support and a working sound output are required. No music is included. Keep your own music on a local or reliably connected drive.
+Download the Windows x64 ZIP from the [v.0.3 release](https://github.com/harryoke/Hazz-Music-Bingo/releases/tag/v.0.3), extract it, and run **HazzMusicBingo.exe**. The .NET runtime is included. The application is unsigned. Windows audio support and a working sound output are required. No music is included. Keep your own music on a local or reliably connected drive.
 
 The app stores its library, games and settings in `%LOCALAPPDATA%\HazzMusicBingo`. Moving or replacing the executable does not move or erase this data. First startup creates an empty database. Later startups reopen the active game automatically.
 
@@ -84,7 +84,7 @@ The app fits each page into the selected printer's printable area, respecting ha
 
 **Play Next Song** chooses the next unplayed song. Clip lengths range from 10 to 60 seconds, with a two-second fade at the end. Short recordings finish earlier. **Stop** stops immediately. **Repeat Last** replays the previous song without adding another played entry; Next can interrupt a repeat.
 
-A track is marked played once audio output starts successfully. A missing file or decoder/output-initialisation failure leaves it unplayed. If the host stops a clip after it starts, it remains played. An audio device failing later does not undo the played flag. There is no single-song undo or skip button in v.0.2; repair missing music and retry, or replay the last song when appropriate.
+A track is marked played once audio output starts successfully. A missing file or decoder/output-initialisation failure leaves it unplayed. If the host stops a clip after it starts, it remains played. An audio device failing later does not undo the played flag. There is no single-song undo or skip button in v.0.3; repair missing music and retry, or replay the last song when appropriate.
 
 **Check Played Songs** opens an alphabetical, paged list on the host and audience screen. Next/Previous pages on the host control the audience list. Closing the list restores the current-song display.
 
@@ -193,3 +193,5 @@ A successful **SCAN MUSIC FOLDER** automatically selects the scanned folder, wit
 For a 1970s game: scan your 70s folder, confirm that path is shown as the source, generate the game, create/print its cards, and save a `.hmbgame` file. Assign that save to your 1970s game button and set its audience theme. The saved game's exact song pool is already locked; switching buttons or changing the generation source does not change existing games.
 
 The selected folder needs at least 60 available songs with a successful scanned duration. Missing/unscanned folders or too few available songs stop generation and leave the active database game intact. No fallback songs are drawn from other folders. Choosing a folder alone does not scan it; scan first if it is new.
+
+![Audience message styling](images/audience-message-design.png)

@@ -1,10 +1,10 @@
 ![Hazz Music Bingo](docs/images/hazz-music-bingo.png)
 
-# Hazz Music Bingo v.0.2
+# Hazz Music Bingo v.0.3
 
 A Windows music-bingo host with custom 5×5 cards, print previews, an audience screen, missing-music checks and winner verification.
 
-[Download Windows x64](https://github.com/harryoke/Hazz-Music-Bingo/releases/tag/v.0.2) · [Quick start](docs/QUICK_START.md) · [User guide](docs/USER_GUIDE.md) · [Build and development](docs/DEVELOPMENT.md) · [Testing](docs/TESTING.md) · [Changes](CHANGELOG.md)
+[Download Windows x64](https://github.com/harryoke/Hazz-Music-Bingo/releases/tag/v.0.3) · [Quick start](docs/QUICK_START.md) · [User guide](docs/USER_GUIDE.md) · [Build and development](docs/DEVELOPMENT.md) · [Testing](docs/TESTING.md) · [Changes](CHANGELOG.md)
 
 ## Copyright and licence
 
@@ -13,6 +13,11 @@ Copyright © 2026 Hazz Karaoke. Free use includes paid shows and business use. U
 ![Host console](docs/images/host-console.png)
 
 ## What it does
+
+- Reads MP3 title/artist tags, with filename fallback.
+- Generates games from a selected scanned folder, optionally including subfolders.
+- Switches between eight labelled, coloured game buttons with saved audience themes and preserved progress.
+- Styles audience winning-rule messages independently with font, size, colour, bold and italic.
 
 - Locks a 60-song game and saves 60 distinct 25-song card layouts.
 - Plays short clips with fade-out, Repeat and Stop; shows played songs on a separate audience display.

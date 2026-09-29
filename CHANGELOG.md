@@ -25,7 +25,7 @@ Hardware-dependent audio, physical printing and multi-monitor rehearsal remain r
 - Added Previous/Next saved-card navigation; Line now uses horizontal and vertical lines only.
 - Added an additive GameWinningSettings table and optional version-1 archive Winning object; old saves remain supported.
 
-## Unreleased — branding and saved-game buttons
+## v.0.3 — themed games, folder selection and MP3 tags
 
 - Added the supplied Hazz Music Bingo logo to the host header and documentation, plus a multi-size Windows executable icon.
 - Added eight configurable game buttons with custom labels, colours and audience-theme snapshots.

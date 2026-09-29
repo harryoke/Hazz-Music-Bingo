@@ -31,3 +31,7 @@ The console runner prints the assertion count and throws on any failure. Run it 
 7. Exercise the audience screen with one display, two displays and mixed scaling. Page the played list and return to the current song.
 
 These hardware/interactive steps are not claimed as completed by the automated suite. Rendered PNGs verify layout without a physical print job. Availability tests do not continuously re-decode every library file. Tests cover no automatic monitor hot-plug recovery or midstream audio-device rollback because those features are not implemented.
+
+## v.0.3 additions
+
+The 357-check suite also covers eight-slot settings, owned save/artwork copies, resuming independent games, corrupt settings, folder boundaries/case/subfolders, insufficient selection preserving the active game, ID3v1/v2 Unicode metadata, multiple artists, missing-field fallback, read-only tag access and rescan identity preservation. UI tests cover banner style editing/preview/persistence, branded icon loading and eight buttons at minimum window size. Packaged self-test additionally reads MP3 tags through the external DLL.
