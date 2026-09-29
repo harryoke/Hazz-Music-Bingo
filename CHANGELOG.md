@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased — repeat playback handover
+
+- Fixed a silent next song when Play Next Song interrupts Repeat Last. Fades and stop cleanup now adjust only the clip's samples, leaving shared audio-device volume untouched.
+- Added regression coverage for immediate handover, interruption during fade, sample amplitude, start notification, Stop and natural completion. Windows Release build passed with zero warnings/errors; all 366 regression checks passed. Physical speaker verification remains required.
+
 ## v.0.1 — first public release
 
 The public version name is intentionally reset from the supplied internal v0.2.15 source.

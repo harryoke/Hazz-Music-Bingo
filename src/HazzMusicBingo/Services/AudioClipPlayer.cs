@@ -1,4 +1,5 @@
 ﻿using NAudio.Wave;
+using NAudio.Wave.SampleProviders;
 
 namespace HazzMusicBingo.Services;
 
@@ -9,6 +10,14 @@ public sealed class AudioClipPlayer : IDisposable
 
     private readonly object _sync = new();
     private PlaybackSession? _current;
+    private readonly Func<IWavePlayer> _createOutput;
+
+    public AudioClipPlayer() : this(() => new WaveOutEvent()) { }
+
+    internal AudioClipPlayer(Func<IWavePlayer> createOutput)
+    {
+        _createOutput = createOutput;
+    }
 
     public bool IsPlaying
     {
@@ -57,13 +66,11 @@ public sealed class AudioClipPlayer : IDisposable
                 session.Reader.CurrentTime = start;
             }
 
-            session.Output =
-                new WaveOutEvent
-                {
-                    Volume = 1.0f
-                };
-
-            session.Output.Init(session.Reader);
+            // Device volume can be shared between waveOut handles. Keep gain
+            // in this clip's samples so retiring a repeat cannot mute its successor.
+            session.Gain = new VolumeSampleProvider(session.Reader.ToSampleProvider());
+            session.Output = _createOutput();
+            session.Output.Init(session.Gain.ToWaveProvider());
 
             PlaybackSession? previous;
 
@@ -125,7 +132,7 @@ public sealed class AudioClipPlayer : IDisposable
             }
 
             await FadeOutAsync(
-                session.Output,
+                session.Gain,
                 fadeDuration,
                 token);
         }
@@ -146,7 +153,7 @@ public sealed class AudioClipPlayer : IDisposable
     }
 
     private static async Task FadeOutAsync(
-        WaveOutEvent output,
+        VolumeSampleProvider gain,
         TimeSpan fadeDuration,
         CancellationToken token)
     {
@@ -171,7 +178,7 @@ public sealed class AudioClipPlayer : IDisposable
 
             try
             {
-                output.Volume =
+                gain.Volume =
                     Math.Clamp(
                         volume,
                         0.0f,
@@ -223,7 +230,7 @@ public sealed class AudioClipPlayer : IDisposable
         {
             if (session.Output is not null)
             {
-                session.Output.Volume = 0.0f;
+                if (session.Gain is not null) session.Gain.Volume = 0.0f;
                 session.Output.Stop();
             }
         }
@@ -241,7 +248,7 @@ public sealed class AudioClipPlayer : IDisposable
             {
                 try
                 {
-                    session.Output.Volume = 0.0f;
+                    if (session.Gain is not null) session.Gain.Volume = 0.0f;
                     session.Output.Stop();
                 }
                 catch
@@ -273,6 +280,7 @@ public sealed class AudioClipPlayer : IDisposable
 
         public CancellationTokenSource Cts { get; }
         public MediaFoundationReader? Reader { get; set; }
-        public WaveOutEvent? Output { get; set; }
+        public IWavePlayer? Output { get; set; }
+        public VolumeSampleProvider? Gain { get; set; }
     }
 }

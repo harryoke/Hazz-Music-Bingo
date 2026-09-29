@@ -25,6 +25,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <InternalsVisibleTo Include="HazzMusicBingo.Regression" />
     <Resource Include="Assets/HazzMusicBingo.png" />
     <Resource Include="Assets/HazzMusicBingo.ico" />
     <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.31" />

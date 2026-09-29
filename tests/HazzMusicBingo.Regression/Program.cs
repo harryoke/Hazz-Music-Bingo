@@ -106,6 +106,7 @@ using (var player = new AudioClipPlayer())
     catch (Exception ex) when (ex.Message != "Missing audio unexpectedly played") { checks++; }
     Check(!started && !player.IsPlaying, "Failed audio must not notify started");
 }
+checks += await AudioPlaybackTests.Run(folder);
 checks += await FeatureTests.Run(folder);
 checks += await LiveWinnerTests.Run(folder);
 checks += await GameShortcutTests.Run(folder);
