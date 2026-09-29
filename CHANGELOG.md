@@ -24,3 +24,10 @@ Hardware-dependent audio, physical printing and multi-monitor rehearsal remain r
 - Added winner acknowledgement and Line → Four Corners → Full House progression with played progress retained.
 - Added Previous/Next saved-card navigation; Line now uses horizontal and vertical lines only.
 - Added an additive GameWinningSettings table and optional version-1 archive Winning object; old saves remain supported.
+
+## Unreleased — branding and saved-game buttons
+
+- Added the supplied Hazz Music Bingo logo to the host header and documentation, plus a multi-size Windows executable icon.
+- Added eight configurable game buttons with custom labels, colours and audience-theme snapshots.
+- Assignments own copies of game saves and artwork; switching resumes local progress and applies the assigned theme.
+- Added button persistence, validation and regression coverage without changing existing saved-game schemas.

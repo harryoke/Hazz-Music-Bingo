@@ -93,7 +93,20 @@ internal static class UiTests
         var history = new GameHistoryWindow(db);
         var winner = new WinnerWindow(db, 1, "ABCDEF123456");
         var main = new MainWindow();
+        Check(((System.Windows.Controls.Primitives.UniformGrid)main.FindName("GameButtonsPanel")).Children.Count == 8, "Eight game buttons are present in the header");
+        Check(main.Icon is not null, "Window loads branded icon");
+        var shortcutEditor = new GameShortcutWindow(new GameShortcut { Label = "1960s", Color = "#FFAA00", GameFile = "fixture.hmbgame",
+            Audience = new AudienceDesignSettings { FontFamilyName = "Georgia" } }, new AudienceDesignSettings());
+        Check(shortcutEditor.ButtonLabel == "1960s" && shortcutEditor.Audience.FontFamilyName == "Georgia", "Shortcut editor loads saved label and theme");
+        Render((FrameworkElement)shortcutEditor.Content, Path.Combine(outputFolder, "game-button-editor.png"), 620, 470);
+        shortcutEditor.Close();
         var flags = System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic;
+        var demoButtons = new[] { "1960s", "1970s", "1980s", "1990s", "Rock", "Disco", "Christmas", "Party mix" }
+            .Select((label, index) => (GameShortcut?)new GameShortcut { Label = label,
+                Color = new[] { "#F59E0B", "#9333EA", "#DB2777", "#2563EB", "#DC2626", "#0891B2", "#15803D", "#D97706" }[index] }).ToList();
+        typeof(MainWindow).GetField("_gameButtons", flags)!.SetValue(main, demoButtons);
+        typeof(MainWindow).GetMethod("RenderGameButtons", flags)!.Invoke(main, null);
+        ((FrameworkElement)main.FindName("GameButtonsPanel")).IsEnabled = true;
         for (var i = 1; i <= 60; i++)
             db.UpsertTrackAsync(Path.Combine(outputFolder, $"ui-song-{i}.wav"), $"Song {i}", "Artist", 30, 0).GetAwaiter().GetResult();
         var liveGame = db.CreateGameAsync(db.GetRandomTracksAsync(60).GetAwaiter().GetResult()).GetAwaiter().GetResult();
@@ -119,6 +132,8 @@ internal static class UiTests
         Check(((TextBox)navigate.FindName("CardBox")).Text == "1", "Previous button navigates back");
         var audience = new AudienceWindow(new AudienceDesignSettings());
         audience.ShowWinningMessage("LINE WON!");
+        audience.ApplyDesign(new AudienceDesignSettings { FontFamilyName = "Georgia", TitleColor = "#FFAA00" });
+        Check(((TextBlock)audience.FindName("WinningMessage")).FontFamily.Source == "Georgia", "Audience theme includes winning banner font");
         audience.ShowTrack(liveCards[0].Squares[0]);
         Check(((TextBlock)audience.FindName("WinningMessage")).Text == "LINE WON!", "Track display preserves rule banner");
         audience.ShowPlayedSongs(liveCards[0].Squares.Take(5).ToList(), 0);
@@ -132,6 +147,9 @@ internal static class UiTests
             Check(((FrameworkElement)view.Content).ActualWidth > 0, "Window layout loads");
         }
         Render((FrameworkElement)main.Content, Path.Combine(outputFolder, "host-console.png"), 1380, 820);
+        Render((FrameworkElement)main.Content, Path.Combine(outputFolder, "host-console-minimum.png"), 1120, 680);
+        Check(((System.Windows.Controls.Primitives.UniformGrid)main.FindName("GameButtonsPanel")).Children.Cast<Button>()
+            .All(b => b.ActualWidth >= 150 && b.ActualHeight >= 40), "All eight shortcuts fit at minimum window size");
         foreach (var view in new Window[] { window, printing, health, history, winner, main }) view.Close();
         app.Shutdown();
         return count;

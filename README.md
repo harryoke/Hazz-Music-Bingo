@@ -1,3 +1,5 @@
+![Hazz Music Bingo](docs/images/hazz-music-bingo.png)
+
 # Hazz Music Bingo v.0.2
 
 A Windows music-bingo host with custom 5×5 cards, print previews, an audience screen, missing-music checks and winner verification.

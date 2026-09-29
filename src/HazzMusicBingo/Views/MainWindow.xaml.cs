@@ -37,6 +37,7 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+        RenderGameButtons();
 
         Loaded += MainWindow_Loaded;
 
@@ -63,6 +64,8 @@ public partial class MainWindow : Window
 
             _cardDesign = _cardDesignService.Load();
             _audienceDesign = _audienceDesignService.Load();
+            try { _gameButtons = _shortcuts.Load(); GameButtonsPanel.IsEnabled = true; }
+            catch (Exception ex) { MessageBox.Show(this, ex.Message + "\nThe saved settings file has not been changed.", "Game button settings"); GameButtonsPanel.IsEnabled = false; }
 
             _gameId = await _db.GetActiveGameIdAsync();
 
@@ -84,6 +87,7 @@ public partial class MainWindow : Window
 
     private async Task RefreshStatusAsync(bool checkMusic = true)
     {
+        RenderGameButtons();
         await RefreshWinningAsync();
         var game = _gameId;
         var total = await _db.GetTrackCountAsync();

@@ -1,3 +1,5 @@
+![Hazz Music Bingo](images/hazz-music-bingo.png)
+
 # Hazz Music Bingo v.0.2 — quick start
 
 ## Install
@@ -47,3 +49,13 @@ Save a `.hmbgame` file for a portable copy. **NEW / CLOSE GAME** keeps the sessi
 - Save the prepared game and make a database backup.
 
 For installation, music relinking, all design/printing options, recovery and troubleshooting, see the [full user guide](USER_GUIDE.md). For licence terms see [LICENSE.txt](../LICENSE.txt).
+
+## Set up one-click themed games
+
+1. Prepare and save each game as a `.hmbgame` file.
+2. Click an empty numbered button in the header.
+3. Choose the saved game, enter a label such as “1960s”, and choose a button colour.
+4. Open **Audience theme…** to choose its font, colours and background artwork, then save the button.
+5. Repeat for up to eight games. Click a button to switch; switching back resumes progress.
+
+Right-click a button to edit it or store your current audience style. Changes to a button's theme do not reset songs. Use your own period artwork and installed fonts for decade games.

@@ -1,3 +1,5 @@
+![Hazz Music Bingo](images/hazz-music-bingo.png)
+
 # Hazz Music Bingo v.0.2 documentation
 
 - [Quick start](QUICK_START.md): installation, event setup and the Line → Four Corners → Full House workflow.

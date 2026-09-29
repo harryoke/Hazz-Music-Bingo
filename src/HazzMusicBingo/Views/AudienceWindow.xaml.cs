@@ -35,6 +35,8 @@ public partial class AudienceWindow : Window
         _design = design.Clone();
 
         var font = SafeFont(_design.FontFamilyName);
+        WinningMessage.FontFamily = font;
+        WinningMessage.Foreground = BrushFromHex(_design.TitleColor);
 
         AudienceRoot.Background = BrushFromHex(_design.BackgroundColor);
 

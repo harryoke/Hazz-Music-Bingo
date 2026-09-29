@@ -14,7 +14,7 @@
     <FileVersion>0.2.0.0</FileVersion>
     <Product>Hazz Music Bingo</Product>
     <Description>Music bingo host, card designer, printing and winner verification for Windows.</Description>
-    <ApplicationIcon />
+    <ApplicationIcon>Assets/HazzMusicBingo.ico</ApplicationIcon>
     <PublishSingleFile>true</PublishSingleFile>
     <SelfContained>true</SelfContained>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
@@ -25,6 +25,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Resource Include="Assets/HazzMusicBingo.png" />
+    <Resource Include="Assets/HazzMusicBingo.ico" />
     <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.31" />
     <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.1.13" />
     <PackageReference Include="NAudio" Version="2.2.1" />

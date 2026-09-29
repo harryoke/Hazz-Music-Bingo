@@ -1,3 +1,5 @@
+![Hazz Music Bingo](images/hazz-music-bingo.png)
+
 # Hazz Music Bingo v.0.2 — user guide
 
 ## Install and start
@@ -157,3 +159,21 @@ The rule, applied range and acknowledgements are stored with each game and inclu
 ![Saved-card navigation and marked squares](images/winner-navigation.png)
 
 ![Audience win banner above the played-song list](images/audience-winner.png)
+
+## Eight saved-game buttons and audience themes
+
+The header has eight numbered game buttons. Click an empty button to assign an existing `.hmbgame` save. Give it a label (up to 32 characters), choose its colour, then open **Audience theme…** to set its audience font, colours, headings and background image. **Use current audience style** copies the style currently used by the host. Save the button to keep it across restarts.
+
+For a 1960s night, assign the saved 60s game, label it “1960s”, choose a bright button colour, and use the theme editor to select an installed period-style font and your own 1960s artwork. Configure another button independently for the 1970s, rock, Christmas or any other game. No decade artwork or additional fonts are bundled; choose your own images and installed fonts. Theme editing also supports loading/saving audience-design presets.
+
+Click an assigned button to stop current playback and switch to that game and theme. First use imports the assigned save; later clicks resume that button's existing local game, keeping its cards, played progress, winning rule, in-play range and playback order. Returning to a game shows Ready until you play its next song. The active button has a gold border and play marker. Normal first-time portable import still shuffles playback order.
+
+Right-click a button to **Assign / edit game button…**, **Store current audience style**, or **Clear button**. Editing just the label, colour or theme keeps its existing progress. Choosing a different saved-game file starts a new assignment. Clearing a button does not erase the game from history or delete its original save. To start a resumed game again, use the existing **RESET GAME TO 0** control deliberately.
+
+Each assignment copies the saved game and chosen background image into the app's data folder. Moving the original save or artwork does not break the button. Music files are still referenced by path and are not copied. Later changes to the original save do not silently change the button; reassign it to use another snapshot. Audience design changes outside button setup only change the current audience style: right-click **Store current audience style** to retain them in that button.
+
+The assignments are stored in `game-shortcuts.json`, with owned snapshots/artwork in `game-buttons/` under `%LOCALAPPDATA%\HazzMusicBingo`. Include these files, the database and other design settings when backing up the whole installation. Database-only backups and portable `.hmbgame` exports do not include button assignments. Old game files and databases need no format change for this feature. Corrupt button settings are reported and left intact, with the buttons disabled for that session.
+
+![Game button setup](images/game-button-editor.png)
+
+The header screenshot uses example assignments; the eight buttons start empty so you can assign your own saved games.
