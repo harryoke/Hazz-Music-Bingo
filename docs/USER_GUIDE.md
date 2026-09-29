@@ -177,3 +177,9 @@ The assignments are stored in `game-shortcuts.json`, with owned snapshots/artwor
 ![Game button setup](images/game-button-editor.png)
 
 The header screenshot uses example assignments; the eight buttons start empty so you can assign your own saved games.
+
+### Winning-rule message styling
+
+At the top of **AUDIENCE SCREEN DESIGN**, use **WINNING RULE / WIN ANNOUNCEMENT** to choose a separate message font, size (12–80), colour, bold and italic. The preview shows “WE ARE PLAYING FOR A FULL HOUSE”. The same style is used for Line, Four Corners, Full House and their WON messages, without changing the song title or artist style. Select **Use Design** to apply it.
+
+These controls are also available through a game button's **Audience theme…** editor. They travel with that button's theme and audience-design preset files. If you change them through the main audience designer, right-click the game button and choose **Store current audience style** to retain them there. Older themes without these fields retain the previous font/colour fallback and 34-point bold text.

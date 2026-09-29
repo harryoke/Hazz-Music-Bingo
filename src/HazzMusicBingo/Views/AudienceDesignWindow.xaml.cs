@@ -35,6 +35,7 @@ public partial class AudienceDesignWindow : Window
             .Select(f => f.Source)
             .ToList();
 
+        WinningFontBox.ItemsSource = FontBox.ItemsSource;
         LoadControls();
         _loading = false;
         UpdatePreview();
@@ -42,6 +43,10 @@ public partial class AudienceDesignWindow : Window
 
     private void LoadControls()
     {
+        WinningFontBox.SelectedItem = _working.WinningFontFamilyName ?? _working.FontFamilyName;
+        WinningSizeBox.Text = _working.WinningFontSize.ToString("0");
+        WinningBoldBox.IsChecked = _working.WinningBold;
+        WinningItalicBox.IsChecked = _working.WinningItalic;
         HeaderBox.Text = _working.HeaderText;
         ReadyBox.Text = _working.ReadyText;
         PlayedHeaderBox.Text = _working.PlayedHeaderText;
@@ -68,6 +73,11 @@ public partial class AudienceDesignWindow : Window
 
     private void ReadControls()
     {
+        if (WinningFontBox.SelectedItem is string winningFont) _working.WinningFontFamilyName = winningFont;
+        if (double.TryParse(WinningSizeBox.Text, out var winningSize) && double.IsFinite(winningSize))
+            _working.WinningFontSize = Math.Clamp(winningSize, 12, 80);
+        _working.WinningBold = WinningBoldBox.IsChecked == true;
+        _working.WinningItalic = WinningItalicBox.IsChecked == true;
         _working.HeaderText = HeaderBox.Text.Trim();
         _working.ReadyText = string.IsNullOrWhiteSpace(ReadyBox.Text)
             ? "READY"
@@ -76,8 +86,8 @@ public partial class AudienceDesignWindow : Window
             ? "PLAYED SONGS"
             : PlayedHeaderBox.Text.Trim();
 
-        if (!string.IsNullOrWhiteSpace(FontBox.Text))
-            _working.FontFamilyName = FontBox.Text;
+        if (FontBox.SelectedItem is string selectedFont)
+            _working.FontFamilyName = selectedFont;
 
         if (double.TryParse(HeaderSizeBox.Text, out var header))
             _working.HeaderFontSize = Math.Clamp(header, 12, 80);
@@ -112,6 +122,11 @@ public partial class AudienceDesignWindow : Window
 
     private void UpdatePreview()
     {
+        PreviewWinning.FontFamily = SafeFont(_working.WinningFontFamilyName ?? _working.FontFamilyName);
+        PreviewWinning.Foreground = BrushFromHex(_working.WinningTextColor ?? _working.TitleColor);
+        PreviewWinning.FontSize = double.IsFinite(_working.WinningFontSize) ? Math.Clamp(_working.WinningFontSize, 12, 80) : 34;
+        PreviewWinning.FontWeight = _working.WinningBold ? FontWeights.Bold : FontWeights.Normal;
+        PreviewWinning.FontStyle = _working.WinningItalic ? FontStyles.Italic : FontStyles.Normal;
         var font = SafeFont(_working.FontFamilyName);
 
         PreviewRoot.Background = BrushFromHex(_working.BackgroundColor);
@@ -170,6 +185,7 @@ public partial class AudienceDesignWindow : Window
 
     private void RefreshColourButtons()
     {
+        SetButtonSwatch(WinningColourButton, _working.WinningTextColor ?? _working.TitleColor);
         SetButtonSwatch(HeaderColourButton, _working.HeaderColor);
         SetButtonSwatch(TitleColourButton, _working.TitleColor);
         SetButtonSwatch(OutlineColourButton, _working.TextOutlineColor);
@@ -206,6 +222,12 @@ public partial class AudienceDesignWindow : Window
         return dialog.ShowDialog() == Forms.DialogResult.OK
             ? $"#{dialog.Color.R:X2}{dialog.Color.G:X2}{dialog.Color.B:X2}"
             : current;
+    }
+
+    private void WinningColour_Click(object sender, RoutedEventArgs e)
+    {
+        _working.WinningTextColor = PickColour(_working.WinningTextColor ?? _working.TitleColor);
+        UpdatePreview();
     }
 
     private void OutlineColour_Click(object sender, RoutedEventArgs e)

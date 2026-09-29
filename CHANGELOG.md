@@ -31,3 +31,4 @@ Hardware-dependent audio, physical printing and multi-monitor rehearsal remain r
 - Added eight configurable game buttons with custom labels, colours and audience-theme snapshots.
 - Assignments own copies of game saves and artwork; switching resumes local progress and applies the assigned theme.
 - Added button persistence, validation and regression coverage without changing existing saved-game schemas.
+- Added independent audience winning-message font, size, colour, bold and italic controls with live preview and theme persistence.

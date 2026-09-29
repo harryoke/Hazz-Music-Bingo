@@ -134,6 +134,23 @@ internal static class UiTests
         audience.ShowWinningMessage("LINE WON!");
         audience.ApplyDesign(new AudienceDesignSettings { FontFamilyName = "Georgia", TitleColor = "#FFAA00" });
         Check(((TextBlock)audience.FindName("WinningMessage")).FontFamily.Source == "Georgia", "Audience theme includes winning banner font");
+        var messageDesign = new AudienceDesignSettings { FontFamilyName = "Arial", WinningFontFamilyName = "Georgia", WinningTextColor = "#00FFAA", WinningFontSize = 46, WinningBold = false, WinningItalic = true };
+        var messageEditor = new AudienceDesignWindow(messageDesign);
+        ((ComboBox)messageEditor.FindName("WinningFontBox")).SelectedItem = "Times New Roman";
+        Check(messageEditor.Settings.WinningFontFamilyName == "Times New Roman" && messageEditor.Settings.FontFamilyName == "Arial", "Message font changes immediately and independently");
+        ((TextBox)messageEditor.FindName("WinningSizeBox")).Text = "52";
+        Check(((TextBlock)messageEditor.FindName("PreviewWinning")).FontSize == 52, "Message size updates live preview");
+        var messagePath = Path.Combine(outputFolder, "message-theme.hmbaudience");
+        var audienceFiles = new AudienceDesignSettingsService();
+        audienceFiles.SaveToFile(messageEditor.Settings.Clone(), messagePath);
+        var savedMessage = audienceFiles.LoadFromFile(messagePath);
+        audience.ApplyDesign(savedMessage);
+        var banner = (TextBlock)audience.FindName("WinningMessage");
+        Check(banner.FontSize == 52 && banner.FontStyle == FontStyles.Italic && banner.FontWeight == FontWeights.Normal
+            && ((SolidColorBrush)banner.Foreground).Color == Color.FromRgb(0, 255, 170), "Saved message style applies to audience display");
+        Check(messageDesign.WinningFontSize == 46, "Editing isolates original theme");
+        Render((FrameworkElement)messageEditor.Content, Path.Combine(outputFolder, "audience-message-design.png"), 1120, 760);
+        messageEditor.Close(); File.Delete(messagePath);
         audience.ShowTrack(liveCards[0].Squares[0]);
         Check(((TextBlock)audience.FindName("WinningMessage")).Text == "LINE WON!", "Track display preserves rule banner");
         audience.ShowPlayedSongs(liveCards[0].Squares.Take(5).ToList(), 0);

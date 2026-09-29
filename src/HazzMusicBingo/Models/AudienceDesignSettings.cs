@@ -1,4 +1,4 @@
-﻿namespace HazzMusicBingo.Models;
+namespace HazzMusicBingo.Models;
 
 public sealed class AudienceDesignSettings
 {
@@ -6,6 +6,12 @@ public sealed class AudienceDesignSettings
     public string ReadyText { get; set; } = "READY";
     public string PlayedHeaderText { get; set; } = "PLAYED SONGS";
     public string FontFamilyName { get; set; } = "Arial";
+
+    public string? WinningFontFamilyName { get; set; }
+    public string? WinningTextColor { get; set; }
+    public double WinningFontSize { get; set; } = 34;
+    public bool WinningBold { get; set; } = true;
+    public bool WinningItalic { get; set; }
 
     public double HeaderFontSize { get; set; } = 34;
     public double TitleFontSize { get; set; } = 72;
@@ -30,6 +36,11 @@ public sealed class AudienceDesignSettings
 
     public AudienceDesignSettings Clone() => new()
     {
+        WinningFontFamilyName = WinningFontFamilyName,
+        WinningTextColor = WinningTextColor,
+        WinningFontSize = WinningFontSize,
+        WinningBold = WinningBold,
+        WinningItalic = WinningItalic,
         HeaderText = HeaderText,
         ReadyText = ReadyText,
         PlayedHeaderText = PlayedHeaderText,

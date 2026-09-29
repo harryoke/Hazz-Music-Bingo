@@ -1,4 +1,4 @@
-﻿using HazzMusicBingo.Models;
+using HazzMusicBingo.Models;
 using HazzMusicBingo.Controls;
 using HazzMusicBingo.Services;
 using System.IO;
@@ -35,8 +35,11 @@ public partial class AudienceWindow : Window
         _design = design.Clone();
 
         var font = SafeFont(_design.FontFamilyName);
-        WinningMessage.FontFamily = font;
-        WinningMessage.Foreground = BrushFromHex(_design.TitleColor);
+        WinningMessage.FontFamily = SafeFont(_design.WinningFontFamilyName ?? _design.FontFamilyName);
+        WinningMessage.Foreground = BrushFromHex(_design.WinningTextColor ?? _design.TitleColor);
+        WinningMessage.FontSize = double.IsFinite(_design.WinningFontSize) ? Math.Clamp(_design.WinningFontSize, 12, 80) : 34;
+        WinningMessage.FontWeight = _design.WinningBold ? FontWeights.Bold : FontWeights.Normal;
+        WinningMessage.FontStyle = _design.WinningItalic ? FontStyles.Italic : FontStyles.Normal;
 
         AudienceRoot.Background = BrushFromHex(_design.BackgroundColor);
 

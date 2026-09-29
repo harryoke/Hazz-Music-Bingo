@@ -21,6 +21,20 @@
                            FontWeight="Bold"
                            Margin="0,0,0,18"/>
 
+                <TextBlock Text="WINNING RULE / WIN ANNOUNCEMENT" FontWeight="Bold" Margin="0,0,0,8"/>
+                <TextBlock Text="Styles ‘WE ARE PLAYING FOR…’ and ‘… WON!’ independently of song text." TextWrapping="Wrap" Margin="0,0,0,8"/>
+                <TextBlock Text="Message font"/>
+                <ComboBox x:Name="WinningFontBox" Height="34" Margin="0,4,0,8" SelectionChanged="DesignChanged"/>
+                <WrapPanel>
+                    <TextBlock Text="Size (12–80)" VerticalAlignment="Center"/>
+                    <TextBox x:Name="WinningSizeBox" Width="65" Margin="8,0" TextChanged="DesignChanged"/>
+                    <Button x:Name="WinningColourButton" Content="Message colour" Click="WinningColour_Click"/>
+                </WrapPanel>
+                <WrapPanel Margin="0,8">
+                    <CheckBox x:Name="WinningBoldBox" Content="Bold" Margin="0,0,18,0" Checked="DesignChanged" Unchecked="DesignChanged"/>
+                    <CheckBox x:Name="WinningItalicBox" Content="Italic" Checked="DesignChanged" Unchecked="DesignChanged"/>
+                </WrapPanel>
+                <Separator Margin="0,8,0,14"/>
                 <TextBlock Text="Now playing header"/>
                 <TextBox x:Name="HeaderBox"
                          Margin="0,4,0,10"
@@ -198,7 +212,11 @@
                                Stretch="UniformToFill"
                                Opacity="0.35"/>
 
-                        <Grid Margin="30">
+                        <DockPanel Margin="30">
+                            <Border DockPanel.Dock="Top" Background="#DD111722" Padding="8" Margin="0,0,0,8">
+                                <TextBlock x:Name="PreviewWinning" Text="WE ARE PLAYING FOR A FULL HOUSE" TextAlignment="Center" TextWrapping="Wrap"/>
+                            </Border>
+                        <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="*"/>
                                 <RowDefinition Height="Auto"/>
@@ -231,6 +249,7 @@
                                                             Margin="0,10,0,0"/>
                             </StackPanel>
                         </Grid>
+                        </DockPanel>
                     </Grid>
                 </Border>
             </Viewbox>
