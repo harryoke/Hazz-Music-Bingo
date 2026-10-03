@@ -36,3 +36,10 @@ These hardware/interactive steps are not claimed as completed by the automated s
 ## v.0.3 additions
 
 The 357-check suite also covers eight-slot settings, owned save/artwork copies, resuming independent games, corrupt settings, folder boundaries/case/subfolders, insufficient selection preserving the active game, ID3v1/v2 Unicode metadata, multiple artists, missing-field fallback, read-only tag access and rescan identity preservation. UI tests cover banner style editing/preview/persistence, branded icon loading and eight buttons at minimum window size. Packaged self-test additionally reads MP3 tags through the external DLL.
+
+
+## v1.0 additions
+
+The suite verifies independent editor controls for all eleven audience roles, outline rendering properties, rule/win and ready/title style switching, theme JSON round trips, deep cloning and game-button theme persistence. Audio checks decode a generated WAV at 0, 30 and 60 seconds, verify short-track fallback and one start notification, reject invalid step values and confirm saved playback preference loading. These checks use a recording output in place of speakers.
+
+Rehearse on the event machine: choose different styles for every audience element; check Ready, a long title, a winner, an empty and populated played list and multiple pages. Try 0/30/60/90-second starts, a shorter track, Repeat and Repeat interrupted by Next during its fade. Check the host fallback notice and audible output.

@@ -1,10 +1,10 @@
 ![Hazz Music Bingo](images/hazz-music-bingo.png)
 
-# Hazz Music Bingo v.0.3 — user guide
+# Hazz Music Bingo v1.0 — user guide
 
 ## Install and start
 
-Download the Windows x64 ZIP from the [v.0.3 release](https://github.com/harryoke/Hazz-Music-Bingo/releases/tag/v.0.3), extract it, and run **HazzMusicBingo.exe**. The .NET runtime is included. The application is unsigned. Windows audio support and a working sound output are required. No music is included. Keep your own music on a local or reliably connected drive.
+Download the Windows x64 ZIP from the [v1.0 release](https://github.com/harryoke/Hazz-Music-Bingo/releases/tag/v1.0), extract it, and run **HazzMusicBingo.exe**. The .NET runtime is included. The application is unsigned. Windows audio support and a working sound output are required. No music is included. Keep your own music on a local or reliably connected drive.
 
 The app stores its library, games and settings in `%LOCALAPPDATA%\HazzMusicBingo`. Moving or replacing the executable does not move or erase this data. First startup creates an empty database. Later startups reopen the active game automatically.
 
@@ -84,7 +84,7 @@ The app fits each page into the selected printer's printable area, respecting ha
 
 **Play Next Song** chooses the next unplayed song. Clip lengths range from 10 to 60 seconds, with a two-second fade at the end. Short recordings finish earlier. **Stop** stops immediately. **Repeat Last** replays the previous song without adding another played entry; Next can interrupt a repeat.
 
-A track is marked played once audio output starts successfully. A missing file or decoder/output-initialisation failure leaves it unplayed. If the host stops a clip after it starts, it remains played. An audio device failing later does not undo the played flag. There is no single-song undo or skip button in v.0.3; repair missing music and retry, or replay the last song when appropriate.
+A track is marked played once audio output starts successfully. A missing file or decoder/output-initialisation failure leaves it unplayed. If the host stops a clip after it starts, it remains played. An audio device failing later does not undo the played flag. There is no single-song undo or skip button in v1.0; repair missing music and retry, or replay the last song when appropriate.
 
 **Check Played Songs** opens an alphabetical, paged list on the host and audience screen. Next/Previous pages on the host control the audience list. Closing the list restores the current-song display.
 
@@ -178,11 +178,25 @@ The assignments are stored in `game-shortcuts.json`, with owned snapshots/artwor
 
 The header screenshot uses example assignments; the eight buttons start empty so you can assign your own saved games.
 
-### Winning-rule message styling
+### Individual audience text styles
 
-At the top of **AUDIENCE SCREEN DESIGN**, use **WINNING RULE / WIN ANNOUNCEMENT** to choose a separate message font, size (12–80), colour, bold and italic. The preview shows “WE ARE PLAYING FOR A FULL HOUSE”. The same style is used for Line, Four Corners, Full House and their WON messages, without changing the song title or artist style. Select **Use Design** to apply it.
+Open **AUDIENCE SCREEN DESIGN** and choose a text element from **Choose which text to style**. Each of these has independent font, size (12-140), colour, bold, italic, outline on/off, outline colour and outline width (0-12):
 
-These controls are also available through a game button's **Audience theme…** editor. They travel with that button's theme and audience-design preset files. If you change them through the main audience designer, right-click the game button and choose **Store current audience style** to retain them there. Older themes without these fields retain the previous font/colour fallback and 34-point bold text.
+- Playing-for message and winner announcement (separate styles).
+- Now playing heading, Ready message, current song title and current artist.
+- Played songs heading, played-list song titles, played-list artists, page number and no-songs-played message.
+
+The preview switches to the relevant screen when you choose an element. Changing one element leaves the others alone. Select **Use design** to apply or **Cancel** to discard. Large type can exceed the space available, so rehearse long titles on the real audience display. **Show artists** controls both current and played-list artist text.
+
+These styles are saved in audience-design presets and game-button theme snapshots. After editing the main audience style, right-click a game button and select **Store current audience style** to keep it there. Old themes use their existing settings as defaults until an individual element is edited. Fonts must be installed on the event computer.
+
+### Choose where clips begin
+
+Under **PLAYBACK**, use **Start music at (seconds)**: 0 starts at the beginning; 30 starts half a minute in; 60 starts one minute in; 90 starts one and a half minutes in. The list offers 0 through 600 in 30-second steps. You can type a larger multiple of 30, up to 86400 seconds. Other values are rejected before playback starts.
+
+Both **PLAY NEXT SONG** and **REPEAT LAST** use the selected position. The value is remembered for this computer after a valid Next or Repeat request, and applies across games. It is separate from clip length and is not stored in portable game saves or game buttons. Changing it does not mark songs or change game progress.
+
+If the chosen position is at or beyond the end of a track, that track starts at 0 and the host status explains the fallback. If there is less music remaining than the chosen clip length, only the remaining audio plays. Fade-out remains automatic. The v1.0 audio fix also allows Next to interrupt Repeat without the old clip muting the new one.
 
 ## Generate a game from one music folder
 

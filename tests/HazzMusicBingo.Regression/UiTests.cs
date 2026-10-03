@@ -133,28 +133,73 @@ internal static class UiTests
         var audience = new AudienceWindow(new AudienceDesignSettings());
         audience.ShowWinningMessage("LINE WON!");
         audience.ApplyDesign(new AudienceDesignSettings { FontFamilyName = "Georgia", TitleColor = "#FFAA00" });
-        Check(((TextBlock)audience.FindName("WinningMessage")).FontFamily.Source == "Georgia", "Audience theme includes winning banner font");
+        Check(((OutlinedTextBlock)audience.FindName("WinningMessage")).FontFamily.Source == "Georgia", "Audience theme includes winning banner font");
         var messageDesign = new AudienceDesignSettings { FontFamilyName = "Arial", WinningFontFamilyName = "Georgia", WinningTextColor = "#00FFAA", WinningFontSize = 46, WinningBold = false, WinningItalic = true };
         var messageEditor = new AudienceDesignWindow(messageDesign);
-        ((ComboBox)messageEditor.FindName("WinningFontBox")).SelectedItem = "Times New Roman";
-        Check(messageEditor.Settings.WinningFontFamilyName == "Times New Roman" && messageEditor.Settings.FontFamilyName == "Arial", "Message font changes immediately and independently");
-        ((TextBox)messageEditor.FindName("WinningSizeBox")).Text = "52";
-        Check(((TextBlock)messageEditor.FindName("PreviewWinning")).FontSize == 52, "Message size updates live preview");
+        ((ComboBox)messageEditor.FindName("ElementBox")).SelectedValue = AudienceTextRole.Win;
+        ((ComboBox)messageEditor.FindName("ElementFontBox")).SelectedItem = "Times New Roman";
+        Check(messageEditor.Settings.StyleFor(AudienceTextRole.Win).FontFamilyName == "Times New Roman" && messageEditor.Settings.FontFamilyName == "Arial", "Message font changes immediately and independently");
+        ((TextBox)messageEditor.FindName("ElementSizeBox")).Text = "52";
+        Check(messageEditor.Settings.StyleFor(AudienceTextRole.Win).Size == 52, "Message size updates live preview");
         var messagePath = Path.Combine(outputFolder, "message-theme.hmbaudience");
         var audienceFiles = new AudienceDesignSettingsService();
         audienceFiles.SaveToFile(messageEditor.Settings.Clone(), messagePath);
         var savedMessage = audienceFiles.LoadFromFile(messagePath);
         audience.ApplyDesign(savedMessage);
-        var banner = (TextBlock)audience.FindName("WinningMessage");
+        var banner = (OutlinedTextBlock)audience.FindName("WinningMessage");
         Check(banner.FontSize == 52 && banner.FontStyle == FontStyles.Italic && banner.FontWeight == FontWeights.Normal
             && ((SolidColorBrush)banner.Foreground).Color == Color.FromRgb(0, 255, 170), "Saved message style applies to audience display");
         Check(messageDesign.WinningFontSize == 46, "Editing isolates original theme");
+        foreach (var role in Enum.GetValues<AudienceTextRole>())
+        {
+            ((ComboBox)messageEditor.FindName("ElementBox")).SelectedValue = role;
+            ((ComboBox)messageEditor.FindName("ElementFontBox")).SelectedItem = "Georgia";
+            ((TextBox)messageEditor.FindName("ElementSizeBox")).Text = (30 + (int)role).ToString();
+            ((CheckBox)messageEditor.FindName("ElementOutlineBox")).IsChecked = true;
+            ((TextBox)messageEditor.FindName("ElementOutlineWidthBox")).Text = "3";
+            var style = messageEditor.Settings.StyleFor(role);
+            Check(style.Size == 30 + (int)role && style.FontFamilyName == "Georgia" && style.Outline && style.OutlineWidth == 3, $"Independent editor controls: {role}");
+            var sample = new OutlinedTextBlock();
+            AudienceTextStyling.Apply(sample, messageEditor.Settings, role);
+            Check(sample.FontSize == style.Size && sample.StrokeThickness == 3, $"Rendered style: {role}");
+        }
+        Check(messageEditor.Settings.StyleFor(AudienceTextRole.Rule).Size == 30 && messageEditor.Settings.StyleFor(AudienceTextRole.Win).Size == 31, "Rule and win styles remain independent");
+        audienceFiles.SaveToFile(messageEditor.Settings, messagePath);
+        var independent = audienceFiles.LoadFromFile(messagePath);
+        Check(independent.TextStyles.Count == 11 && independent.StyleFor(AudienceTextRole.Page).Size == 39, "All eleven styles round trip");
+        var cloned = independent.Clone(); cloned.TextStyles["Page"].Size = 85;
+        Check(independent.StyleFor(AudienceTextRole.Page).Size == 39, "Style dictionaries deep clone");
+        audience.ApplyDesign(independent);
+        audience.ShowTrack(null);
+        Check(((OutlinedTextBlock)audience.FindName("AudienceTitle")).FontSize == 33, "Ready has own style");
+        audience.ShowTrack(liveCards[0].Squares[0]);
+        Check(((OutlinedTextBlock)audience.FindName("AudienceTitle")).FontSize == 34, "Track replaces ready style");
+        audience.ShowWinningMessage("WE ARE PLAYING FOR A LINE");
+        Check(banner.FontSize == 30 && banner.StrokeThickness == 3, "Rule outline applies on real audience");
+        audience.ShowWinningMessage("LINE WON!");
+        Check(banner.FontSize == 31, "Win style switches on real audience");
+        audience.ShowPlayedSongs(Array.Empty<Track>());
+        Check(((OutlinedTextBlock)((Grid)audience.FindName("PlayedSongsGrid")).Children[0]).FontSize == 40, "Empty list has own style");
+        audience.ApplyDesign(independent);
+        Check(((Grid)audience.FindName("PlayedPanel")).Visibility == Visibility.Visible, "Theme changes preserve empty played-list view");
+        foreach (var pair in messageEditor.Settings.TextStyles)
+        {
+            pair.Value.FontFamilyName = "Arial";
+            pair.Value.OutlineWidth = 1;
+            pair.Value.Color = pair.Key == "Win" ? "#FFE082" : "#FFFFFF";
+            pair.Value.Italic = false;
+        }
+        messageEditor.Settings.TextStyles["Title"].Size = 72;
+        messageEditor.Settings.TextStyles["Artist"].Size = 36;
+        messageEditor.Settings.TextStyles["Win"].Size = 38;
+        ((ComboBox)messageEditor.FindName("ElementBox")).SelectedValue = AudienceTextRole.Win;
+        audience.ApplyDesign(messageEditor.Settings);
         Render((FrameworkElement)messageEditor.Content, Path.Combine(outputFolder, "audience-message-design.png"), 1120, 760);
         messageEditor.Close(); File.Delete(messagePath);
         audience.ShowTrack(liveCards[0].Squares[0]);
-        Check(((TextBlock)audience.FindName("WinningMessage")).Text == "LINE WON!", "Track display preserves rule banner");
+        Check(((OutlinedTextBlock)audience.FindName("WinningMessage")).Text == "LINE WON!", "Track display preserves rule banner");
         audience.ShowPlayedSongs(liveCards[0].Squares.Take(5).ToList(), 0);
-        Check(((TextBlock)audience.FindName("WinningMessage")).Text == "LINE WON!", "Played list preserves rule banner");
+        Check(((OutlinedTextBlock)audience.FindName("WinningMessage")).Text == "LINE WON!", "Played list preserves rule banner");
         Render((FrameworkElement)audience.Content, Path.Combine(outputFolder, "audience-winner.png"), 1280, 720);
         Render((FrameworkElement)navigate.Content, Path.Combine(outputFolder, "winner-navigation.png"), 1050, 780);
         navigate.Close(); audience.Close();

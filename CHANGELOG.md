@@ -1,9 +1,17 @@
 # Changelog
 
-## Unreleased — repeat playback handover
+## v1.0 - audience text styles and clip start positions
+
+- Added separate font, size, colour, bold, italic and outline controls for eleven audience text elements, including distinct playing-for and winner announcements.
+- Theme presets and saved-game buttons preserve each text style; older themes retain legacy fallbacks.
+- Added playback starts at 0, 30, 60, 90 seconds and later 30-second steps for Next and Repeat. Short tracks fall back to the beginning, with a host notice.
+- Playback start is remembered in the local profile after use. No database or game-save schema migration is required.
+- Updated guides and illustrated PDF manual for v1.0.
+
+### Repeat playback handover fix
 
 - Fixed a silent next song when Play Next Song interrupts Repeat Last. Fades and stop cleanup now adjust only the clip's samples, leaving shared audio-device volume untouched.
-- Added regression coverage for immediate handover, interruption during fade, sample amplitude, start notification, Stop and natural completion. Windows Release build passed with zero warnings/errors; all 366 regression checks passed. Physical speaker verification remains required.
+- Added regression coverage for immediate handover, interruption during fade, sample amplitude, start notification, Stop and natural completion. Windows Release build passed with zero warnings/errors; all 410 regression checks passed. Physical speaker verification remains required.
 
 ## v.0.1 — first public release
 

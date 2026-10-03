@@ -1,7 +1,7 @@
-# v.0.3 validation record
+# v1.0 validation record
 
 - Release solution build: zero warnings and zero errors.
-- Regression suite: **357 assertions passed**, including 20 independently generated 60-card sets and 24 print-option combinations.
+- Regression suite: **410 assertions passed**, including 20 independently generated 60-card sets and 24 print-option combinations.
 - WPF rendering: card designer, classic/midnight cards, four-card sheet, print preview and host console rendered and inspected. Print viewer pages were loaded through WPF's dispatcher.
 - Standalone Windows x64 self-test: passed native SQLite loading, 60-card generation, 15 four-card pages, archive round trip and Media Foundation WAV decoding.
 - Packaged native SQLite: **3.53.3**. Packaged .NET runtime: **8.0.31**.
@@ -23,4 +23,6 @@ Exit code 0 and a JSON `PASS` result indicate success. This mode creates tempora
 
 GitHub's [Actions page](https://github.com/harryoke/Hazz-Music-Bingo/actions) records the clean Windows build, regression and packaged-executable checks for each published source commit.
 
-v.0.3 additionally validates MP3 tag reading in the packaged executable, independent winning-message styling, eight game shortcuts and folder-scoped generation. The release ZIP includes the external TagLibSharp.dll; keeping only the EXE is not a complete installation.
+v1.0 additionally validates MP3 tag reading in the packaged executable, independent winning-message styling, eight game shortcuts and folder-scoped generation. The release ZIP includes the external TagLibSharp.dll; keeping only the EXE is not a complete installation.
+
+- v1.0 adds decoded offset checks at 0/30/60 seconds, short-track fallback, Repeat-to-Next interruption and independent styles for eleven audience text elements.

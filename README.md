@@ -1,12 +1,12 @@
 ![Hazz Music Bingo](docs/images/hazz-music-bingo.png)
 
-# Hazz Music Bingo v.0.3
+# Hazz Music Bingo v1.0
 
 A Windows music-bingo host with custom 5×5 cards, print previews, an audience screen, missing-music checks and winner verification.
 
-[Download Windows x64](https://github.com/harryoke/Hazz-Music-Bingo/releases/tag/v.0.3) · [Quick start](docs/QUICK_START.md) · [User guide](docs/USER_GUIDE.md) · [Build and development](docs/DEVELOPMENT.md) · [Testing](docs/TESTING.md) · [Changes](CHANGELOG.md)
+[Download Windows x64](https://github.com/harryoke/Hazz-Music-Bingo/releases/tag/v1.0) · [Quick start](docs/QUICK_START.md) · [User guide](docs/USER_GUIDE.md) · [Build and development](docs/DEVELOPMENT.md) · [Testing](docs/TESTING.md) · [Changes](CHANGELOG.md)
 
-[Download the complete illustrated PDF manual](https://github.com/harryoke/Hazz-Music-Bingo/releases/download/v.0.3/Hazz_Music_Bingo_v0.3_Complete_Manual.pdf) — 31 pages covering player rules, hosting, themes, printing, recovery, card randomisation and the game engine's maths.
+[Download the complete illustrated PDF manual](https://github.com/harryoke/Hazz-Music-Bingo/releases/download/v1.0/Hazz_Music_Bingo_v1.0_Complete_Manual.pdf) — 31 pages covering player rules, hosting, themes, printing, recovery, card randomisation and the game engine's maths.
 
 ## Copyright and licence
 
@@ -19,7 +19,9 @@ Copyright © 2026 Hazz Karaoke. Free use includes paid shows and business use. U
 - Reads MP3 title/artist tags, with filename fallback.
 - Generates games from a selected scanned folder, optionally including subfolders.
 - Switches between eight labelled, coloured game buttons with saved audience themes and preserved progress.
-- Styles audience winning-rule messages independently with font, size, colour, bold and italic.
+- Styles eleven audience text elements independently: font, size, colour, bold, italic and outline colour/width.
+- Starts clips at 0, 30, 60, 90 seconds or another 30-second step; Next and Repeat share the setting.
+- Fixes silent audio when Next interrupts Repeat, including during fade-out.
 
 - Locks a 60-song game and saves 60 distinct 25-song card layouts.
 - Plays short clips with fade-out, Repeat and Stop; shows played songs on a separate audience display.

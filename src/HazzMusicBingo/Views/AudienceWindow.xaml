@@ -14,7 +14,7 @@
         <Grid Margin="40">
             <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
             <Border Background="#DD111722" Padding="12" Margin="0,0,0,15">
-                <TextBlock x:Name="WinningMessage" Foreground="#FFE082" FontWeight="Bold" FontSize="34" TextAlignment="Center" TextWrapping="Wrap"/>
+                <controls:OutlinedTextBlock x:Name="WinningMessage" Foreground="#FFE082" FontWeight="Bold" FontSize="34" TextAlignment="Center" TextWrapping="Wrap"/>
             </Border>
             <Grid x:Name="NowPlayingPanel" Grid.Row="1">
                 <Grid.RowDefinitions>

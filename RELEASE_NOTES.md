@@ -1,42 +1,40 @@
-# Hazz Music Bingo v.0.3 — themed game buttons and MP3 tags
+# Hazz Music Bingo v1.0
 
-Prepare decade-specific music bingo games, switch between eight saved games and audience themes, and read song titles/artists directly from MP3 tags.
+Style every audience text element independently and choose where music clips begin. This release also includes the tested Repeat Last to Play Next Song audio fix.
 
-## Download and start
+## Download and quick start
 
-Download **Hazz-Music-Bingo-v0.3-Windows-x64.zip**. Extract the entire ZIP and run **HazzMusicBingo.exe**. Keep **TagLibSharp.dll** beside the executable. Windows x64 is required; .NET is included. The executable is unsigned. Music is not included.
+Download **Hazz-Music-Bingo-v1.0-Windows-x64.zip**, extract the whole ZIP into a new folder, and run **HazzMusicBingo.exe**. Keep **TagLibSharp.dll** beside it. Windows x64 is required; .NET is bundled. The EXE is unsigned. Music is not included.
 
-1. Scan your music folder. MP3 title and artist tags are read automatically; missing fields fall back to filenames.
-2. Under GAME, check MUSIC SOURCE FOR NEW GAME. A successful scan selects that folder; choose whether to include subfolders. At least 60 playable scanned songs are required in the selection.
-3. Generate the game, design/print its cards, apply the sold-card range and save it.
-4. Click an empty header button to assign the save, a custom label/colour and its audience theme.
-5. Play for Line, then Four Corners, then Full House. Acknowledge winners and switch rules without resetting songs.
+1. Scan your music and choose the folder to use for the new game (at least 60 playable indexed songs).
+2. Generate the game, design/print cards, apply the sold-card range and save.
+3. Open **AUDIENCE SCREEN DESIGN**, choose a text element and adjust its font, size, colour and outline. Select **Use design**.
+4. Under **PLAYBACK**, choose **Start music at (seconds)**: 0, 30, 60, 90 or another multiple of 30. Next and Repeat use this position. If the track is too short, it starts at 0 with a host notice.
+5. Play for Line, then Four Corners, then Full House, acknowledging winners and changing rules without resetting progress.
 
-[Quick start](https://github.com/harryoke/Hazz-Music-Bingo/blob/v.0.3/docs/QUICK_START.md) · [Full user guide](https://github.com/harryoke/Hazz-Music-Bingo/blob/v.0.3/docs/USER_GUIDE.md) · [Development](https://github.com/harryoke/Hazz-Music-Bingo/blob/v.0.3/docs/DEVELOPMENT.md)
+[Quick start](https://github.com/harryoke/Hazz-Music-Bingo/blob/v1.0/docs/QUICK_START.md) | [User guide](https://github.com/harryoke/Hazz-Music-Bingo/blob/v1.0/docs/USER_GUIDE.md) | [31-page PDF manual](https://github.com/harryoke/Hazz-Music-Bingo/releases/download/v1.0/Hazz_Music_Bingo_v1.0_Complete_Manual.pdf)
 
-## New in v.0.3
+## New controls
 
-- Hazz Music Bingo logo in the main GUI and documentation, plus a branded Windows icon.
-- Eight saved-game buttons with user-defined labels and colours. Each retains an audience theme and owned copies of its save/background image. Returning to a button resumes its local game progress.
-- Separate font, size, colour, bold and italic controls for WE ARE PLAYING FOR… and … WON! messages, with live preview and per-button theme persistence.
-- Folder-only game generation, with optional subfolders and an All music choice. Insufficient selections never pull songs from other folders.
-- Read-only MP3 title/artist tags: ID3v1 and ID3v2, Unicode, multiple performers and independent filename fallback. Rescan existing folders to refresh labels.
-- Updated illustrated documentation, quick start, regression coverage and third-party notices/source.
+- Eleven independent audience text styles: playing-for message, winner announcement, Now Playing heading, Ready, current song title, current artist, played-list heading, played titles, played artists, page number and empty-list message.
+- Each style offers installed font, size 12-140, text colour, bold, italic, outline on/off, outline colour and outline width 0-12. The preview shows the relevant screen. Outlines render behind the fill for readability.
+- Audience themes and all eight saved-game buttons retain the individual styles. Existing themes use their old settings until an element is edited.
+- Start position dropdown offers 0-600 seconds in 30-second steps; larger steps can be typed up to 86400. Invalid values stop the request before audio starts. Short remaining audio plays only to the track end.
+- The chosen start is remembered locally after Next or Repeat and applies across games; it is separate from clip length and game saves.
+- Next can interrupt Repeat during steady playback or fade without the retiring clip muting the next song.
 
-## Upgrading and compatibility
+## Compatibility and upgrade
 
-Close the old app and extract this package into a new folder. The same Windows account retains its normal library and history. Existing version-1 game saves remain supported. Back up your profile before an event.
+Existing databases, valid version-1 game saves, printed cards, live-winning settings and game-button assignments remain supported. No database or game-save schema migration is needed. The normal Windows profile retains your data when you extract the release into a new folder.
 
-Button assignments live in game-shortcuts.json, with owned saves/artwork under game-buttons/ in the app data folder. Include these alongside the database and design settings in full-profile backups. Database-only backups and portable game saves do not include button assignments. Music is referenced by path, not copied.
+Audience theme JSON adds optional per-element TextStyles; missing entries fall back to the legacy fields. playback-settings.json stores the last used start offset. Include it with the database, designs and game-buttons folder in full-profile backups. Music is still referenced by path, not copied. Physical speakers, printers and displays should be rehearsed before an event.
 
-The generation source starts at All scanned music after restarting: check it before generating. Existing games retain their locked song pools. Rescanning updates shared song labels, including existing game displays; do this before printing event cards. Changing the original assigned save does not change a button automatically: reassign it for a new snapshot.
+## Validation
 
-## Validation and package contents
+Windows Release build: zero warnings/errors. **410 regression checks passed**, including decoded WAV samples at 0, 30 and 60 seconds, short-track fallback, Repeat-to-Next handover, all eleven text styles, theme/button persistence and 20 generated card sets. Packaged executable self-test checks database loading, cards, printing, game archives, WAV decoding and MP3 tags. The dependency audit reported no known vulnerable packages. Hardware speaker output is not claimed by these automated checks.
 
-Windows Release build: zero warnings/errors. **357 regression checks passed**, including 20 independently generated card sets. Packaged executable self-test passed SQLite loading, card generation, WPF print rendering, archive round trip, Windows WAV decoding and MP3 tag reading. Dependency audit reported no known vulnerable packages. Physical speakers, printers and multiple displays still require an event-machine rehearsal.
-
-The Windows ZIP contains the EXE, required tag-reader DLL, full documentation, quick start, licence, third-party notices and library source. The Source ZIP contains this release's application source and tests. SHA256SUMS.txt provides hashes for both archives.
+The release includes Windows and source ZIPs, the updated illustrated PDF manual and SHA-256 checksums. The Windows ZIP also contains the guides, licences and third-party source/notices.
 
 ## Copyright and licence
 
-Copyright © 2026 Hazz Karaoke. Free use includes paid and commercial shows. Unchanged copies may be shared free with branding/notices intact. Redistribution of modified, renamed or rebranded app versions requires written permission. Third-party rights remain applicable; TagLibSharp is separately licensed under LGPL-2.1 and remains replaceable. See LICENSE.txt and THIRD_PARTY_NOTICES.md.
+Copyright 2026 Hazz Karaoke. Free use includes paid and commercial shows. Unchanged copies may be shared free with branding and notices intact. Modified or rebranded redistribution requires written permission. Third-party licences and statutory rights remain applicable. TagLibSharp remains separately replaceable under LGPL-2.1; its source and licence are included.

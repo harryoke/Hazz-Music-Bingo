@@ -1,6 +1,6 @@
 namespace HazzMusicBingo.Models;
 
-public sealed class AudienceDesignSettings
+public sealed partial class AudienceDesignSettings
 {
     public string HeaderText { get; set; } = "NOW PLAYING";
     public string ReadyText { get; set; } = "READY";
@@ -36,6 +36,7 @@ public sealed class AudienceDesignSettings
 
     public AudienceDesignSettings Clone() => new()
     {
+        TextStyles = (TextStyles ?? new()).Where(p => p.Value is not null).ToDictionary(p => p.Key, p => p.Value.Clone()),
         WinningFontFamilyName = WinningFontFamilyName,
         WinningTextColor = WinningTextColor,
         WinningFontSize = WinningFontSize,

@@ -56,6 +56,26 @@ internal static class AudioPlaybackTests
         Check(!player.IsPlaying && outputs[4].Disposed, "Natural completion releases output");
         Check(outputs.All(o => o.VolumeWrites == 0),
             "Start, fade, interruption and cleanup never change shared device volume");
+        var seekPath = Path.Combine(folder, "seek.wav");
+        using (var writer = new WaveFileWriter(seekPath, new WaveFormat(44100, 16, 1)))
+            for (var i = 0; i < 44100 * 61; i++) writer.WriteSample(i < 44100 * 30 ? 0.25f : i < 44100 * 60 ? 0.5f : 0.75f);
+        foreach (var offset in new[] { 0, 30, 60, 90 })
+        {
+            TimeSpan? resolved = null;
+            var notifications = 0;
+            var playback = player.PlayAsync(seekPath, TimeSpan.FromSeconds(offset), TimeSpan.FromSeconds(30),
+                onStarted: () => { notifications++; return Task.CompletedTask; }, onPositionResolved: value => resolved = value);
+            var expected = offset == 30 ? 0.5f : offset == 60 ? 0.75f : 0.25f;
+            Check(Math.Abs(outputs[^1].ReadLevel() - expected) < 0.01f, $"Decoded sample at start offset {offset}");
+            Check(resolved == TimeSpan.FromSeconds(offset == 90 ? 0 : offset) && notifications == 1, $"Resolved offset and one start callback: {offset}");
+            player.Stop(); await playback.WaitAsync(TimeSpan.FromSeconds(5));
+        }
+        Check(PlaybackSettingsService.ResolveStart(TimeSpan.FromSeconds(60), TimeSpan.FromSeconds(60)) == TimeSpan.Zero, "Offset at exact end falls back to start");
+        Check(!PlaybackSettingsService.IsValid(-30) && !PlaybackSettingsService.IsValid(45) && !PlaybackSettingsService.IsValid(86430), "Invalid offsets rejected");
+        Check(PlaybackSettingsService.IsValid(0) && PlaybackSettingsService.IsValid(90) && PlaybackSettingsService.IsValid(86400), "Thirty-second steps accepted");
+        var preferences = new PlaybackSettingsService(); preferences.Save(90);
+        Check(new PlaybackSettingsService().Load() == 90, "Playback offset survives restart");
+        preferences.Save(0);
         return checks;
     }
 

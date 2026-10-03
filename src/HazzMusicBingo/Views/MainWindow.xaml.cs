@@ -19,6 +19,20 @@ public partial class MainWindow : Window
     private GameFileService? _gameFileService;
 
     private readonly AudioClipPlayer _audio = new();
+    private readonly PlaybackSettingsService _playbackSettings = new();
+
+    private int ReadStartSeconds()
+    {
+        if (!int.TryParse(ClipStartCombo.Text, out var seconds) || !PlaybackSettingsService.IsValid(seconds))
+            throw new InvalidOperationException("Start music at must be 0, 30, 60, 90 seconds, or another multiple of 30 up to 86400.");
+        _playbackSettings.Save(seconds);
+        return seconds;
+    }
+    private void ShowPlaybackPosition(int requested, TimeSpan actual, int duration, bool repeat)
+    {
+        PlaybackText.Text = $"{(repeat ? "Repeating" : "Playing")} {duration}-second clip from {actual.TotalSeconds:0}s"
+            + (requested > 0 && actual == TimeSpan.Zero ? " | track too short for chosen start; using 0s" : " | smooth fade-out");
+    }
 
 
     private readonly CardDesignSettingsService _cardDesignService = new();
@@ -53,6 +67,8 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+        ClipStartCombo.ItemsSource = Enumerable.Range(0, 21).Select(i => (i * 30).ToString()).ToArray();
+        ClipStartCombo.Text = _playbackSettings.Load().ToString();
         RenderGameButtons();
 
         Loaded += MainWindow_Loaded;
@@ -319,13 +335,14 @@ public partial class MainWindow : Window
 
             var playingGameId = _gameId.Value;
             var seconds = GetClipSeconds();
+            var startSeconds = ReadStartSeconds();
 
             PlaybackText.Text =
                 $"Playing {seconds}-second clip · smooth fade-out";
 
             await _audio.PlayAsync(
                 track.FilePath,
-                TimeSpan.Zero,
+                TimeSpan.FromSeconds(startSeconds),
                 TimeSpan.FromSeconds(seconds),
                 onStarted: async () =>
                 {
@@ -335,7 +352,8 @@ public partial class MainWindow : Window
                     _lastTrack = track;
                     ShowCurrentTrack(track);
                     await RefreshStatusAsync(checkMusic: false);
-                });
+                },
+                onPositionResolved: actual => ShowPlaybackPosition(startSeconds, actual, seconds, false));
 
             // An older Repeat/Play task must never overwrite the status
             // belonging to a newer playback operation.
@@ -401,14 +419,16 @@ public partial class MainWindow : Window
             ShowCurrentTrack(repeatedTrack);
 
             var seconds = GetClipSeconds();
+            var startSeconds = ReadStartSeconds();
 
             PlaybackText.Text =
                 $"Repeating {seconds}-second clip · smooth fade-out";
 
             await _audio.PlayAsync(
                 repeatedTrack.FilePath,
-                TimeSpan.Zero,
-                TimeSpan.FromSeconds(seconds));
+                TimeSpan.FromSeconds(startSeconds),
+                TimeSpan.FromSeconds(seconds),
+                onPositionResolved: actual => ShowPlaybackPosition(startSeconds, actual, seconds, true));
 
             if (operationId == _playbackOperationId)
             {

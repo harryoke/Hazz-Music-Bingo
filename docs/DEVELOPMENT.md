@@ -67,9 +67,9 @@ The requested first public release is named **Hazz Music Bingo v.0.1**, tag **v.
 
 Version-1 archives add an optional Winning object. Validation precedes mutation; winning settings are inserted in the same transaction as game state and cards. Reset clears acknowledgements transactionally with played state. Rule changes only update settings. Older apps ignore the optional archive object and will lose those settings if they resave it.
 
-The current release is **v.0.3**, tag **v.0.3**, application version **0.3.0**. The original public release remains at tag **v.0.1**. The legacy release-v0.1 workflow must not be used to publish newer versions: create their own versioned tag and assets after validation. Normal main-branch CI does not publish releases.
+The current release is **v1.0**, tag **v1.0**, application version **1.0.0**. The original public release remains at tag **v.0.1**. The legacy release-v0.1 workflow must not be used to publish newer versions: create their own versioned tag and assets after validation. Normal main-branch CI does not publish releases.
 
-## v.0.3 source selection, shortcuts and tags
+## v1.0 source selection, shortcuts and tags
 
 GameService optionally filters indexed paths to a selected folder before availability checks. Matching is case-insensitive with a directory boundary; subfolders are optional. Insufficient pools never fall back to the whole library. A successful scan updates the host's selection; the selector resets to the whole library at startup. Saved game pools are unchanged.
 
@@ -78,3 +78,10 @@ GameShortcutService stores eight slots in game-shortcuts.json and owns save/artw
 AudienceDesignSettings adds optional winning-message font/colour and size/bold/italic fields. Missing fields preserve prior styling defaults; Clone includes the new values for per-button themes.
 
 TrackMetadataReader uses unmodified TagLibSharp 2.3.0 for read-only MP3 title/performer metadata. Missing fields fall back independently to FilenameMetadata; other formats retain filename metadata. Scanning still validates duration with Windows Media Foundation. TagLibSharp.dll is excluded from the single-file bundle in KeepTagReaderExternal and copied alongside the executable. Always distribute it, its licence/notices and the corresponding source archive in licenses/.
+
+
+## v1.0 settings compatibility
+
+No database or portable-game schema change is required. AudienceDesignSettings adds an optional TextStyles dictionary keyed by AudienceTextRole names. Missing entries fall back to legacy fields; clones deep-copy each entry, and game-button theme snapshots retain them. The existing legacy fields remain readable. OutlinedTextBlock now supports italic glyphs and paints the outline behind the fill.
+
+playback-settings.json stores StartSeconds (default 0), validated as a multiple of 30 from 0 to 86400. This is a computer-wide host preference saved when Next or Repeat is requested, separate from game archives and button assignments. AudioClipPlayer resolves offsets against decoded track duration and falls back to zero at/past the end. It uses per-stream sample gain rather than shared output-device volume for fades and cleanup.

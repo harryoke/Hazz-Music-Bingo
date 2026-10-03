@@ -24,13 +24,16 @@ internal static class GameShortcutTests
         var slots = service.Load();
         Check(slots.Count == 8 && slots.All(s => s is null), "Eight empty slots on first start");
         var theme = new AudienceDesignSettings { FontFamilyName = "Georgia", BackgroundColor = "#552211", BackgroundImagePath = artwork };
+        theme.TextStyles["Title"] = new AudienceTextStyle { FontFamilyName = "Georgia", Size = 67, Outline = true };
         slots[0] = await service.PrepareAsync(save, "1960s", "#FFAA00", theme);
         slots[1] = await service.PrepareAsync(save, "1970s", "#663399", new AudienceDesignSettings { FontFamilyName = "Arial", BackgroundColor = "#221144" });
         theme.FontFamilyName = "Changed";
+        theme.TextStyles["Title"].Size = 99;
         Check(slots[0]!.Audience.FontFamilyName == "Georgia", "Slot owns theme snapshot");
         await service.SaveAsync(slots);
         File.Delete(artwork); File.Delete(save);
         slots = new GameShortcutService(root).Load();
+        Check(slots[0]!.Audience.StyleFor(AudienceTextRole.Title).Size == 67, "Per-text style survives button snapshot and restart");
         Check(slots[0]!.Label == "1960s" && slots[1]!.Color == "#663399", "Labels and colours survive restart");
         Check(File.ReadAllBytes(slots[0]!.Audience.BackgroundImagePath).SequenceEqual(new byte[] { 1, 2, 3 }), "Owned artwork survives original removal");
         var first = await service.ActivateAsync(db, slots[0]!);

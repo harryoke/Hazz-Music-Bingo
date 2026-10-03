@@ -1,10 +1,10 @@
 ![Hazz Music Bingo](images/hazz-music-bingo.png)
 
-# Hazz Music Bingo v.0.3 — quick start
+# Hazz Music Bingo v1.0 — quick start
 
 ## Install
 
-Download **Hazz-Music-Bingo-v0.3-Windows-x64.zip** from the [v.0.3 release](https://github.com/harryoke/Hazz-Music-Bingo/releases/tag/v.0.3). Extract the entire ZIP into a folder, keep `TagLibSharp.dll` beside the EXE, then run **HazzMusicBingo.exe**. Windows x64 is required; .NET is included. Music is not included.
+Download **Hazz-Music-Bingo-v1.0-Windows-x64.zip** from the [v1.0 release](https://github.com/harryoke/Hazz-Music-Bingo/releases/tag/v1.0). Extract the entire ZIP into a folder, keep `TagLibSharp.dll` beside the EXE, then run **HazzMusicBingo.exe**. Windows x64 is required; .NET is included. Music is not included.
 
 Upgrading from v.0.1? Close the old app and extract this version into a new folder. The same Windows account automatically retains its library and games. Back up the database through **GAME HISTORY / RECOVERY** before your first event with the update. Old saves open with live tracking off until you apply a sold-card range.
 
@@ -17,7 +17,11 @@ Upgrading from v.0.1? Close the old app and extract this version into a new fold
 5. **PREVIEW / PRINT CARDS**: this creates and saves all 60 layouts. Select the cards to print and test one page. Choose Microsoft Print to PDF for PDF cards.
 6. Under **PLAYING FOR**, enter the first and last sold card numbers and press **Apply**. For example, 1–42 means 42 cards in play. The printed range and sold range are separate controls. Live tracking covers one contiguous range; do not include unsold numbers within it.
 7. Select **LINE**, then **SAVE GAME**. Keep the game file with the printed cards.
-8. Connect the audience display, select **SHOW AUDIENCE**, check your speaker output and choose a clip length.
+8. Connect the audience display, select **SHOW AUDIENCE**, check your speaker output and choose a clip length. Under PLAYBACK, set **Start music at (seconds)** to 0, 30, 60, 90 or another 30-second step. A track shorter than the chosen start begins at 0.
+
+## Style the audience display
+
+Open **AUDIENCE SCREEN DESIGN**, choose a text element, then set its font, colour, size and outline. Playing-for and winner messages have separate styles, as do headings, Ready, titles, artists, played-list labels and page numbers. Choose **Use design**. Store the current audience style in a game button if you want it recalled with that game.
 
 ## Run the game
 

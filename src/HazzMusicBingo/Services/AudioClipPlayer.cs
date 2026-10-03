@@ -43,7 +43,8 @@ public sealed class AudioClipPlayer : IDisposable
         TimeSpan start,
         TimeSpan duration,
         CancellationToken cancellationToken = default,
-        Func<Task>? onStarted = null)
+        Func<Task>? onStarted = null,
+        Action<TimeSpan>? onPositionResolved = null)
     {
         if (duration <= TimeSpan.Zero)
             throw new ArgumentOutOfRangeException(nameof(duration));
@@ -60,11 +61,9 @@ public sealed class AudioClipPlayer : IDisposable
             session.Reader =
                 new MediaFoundationReader(filePath);
 
-            if (start > TimeSpan.Zero &&
-                start < session.Reader.TotalTime)
-            {
-                session.Reader.CurrentTime = start;
-            }
+            var actualStart = PlaybackSettingsService.ResolveStart(start, session.Reader.TotalTime);
+            if (actualStart > TimeSpan.Zero) session.Reader.CurrentTime = actualStart;
+            onPositionResolved?.Invoke(actualStart);
 
             // Device volume can be shared between waveOut handles. Keep gain
             // in this clip's samples so retiring a repeat cannot mute its successor.

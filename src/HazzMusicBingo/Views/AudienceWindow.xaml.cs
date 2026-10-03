@@ -16,7 +16,14 @@ namespace HazzMusicBingo.Views;
 public partial class AudienceWindow : Window
 {
     public const int PlayedSongsPageSize = 6;
-    public void ShowWinningMessage(string message) => WinningMessage.Text = message;
+    private Track? _currentTrack;
+    private bool _showingPlayed;
+    public void ShowWinningMessage(string message)
+    {
+        WinningMessage.Text = message;
+        AudienceTextStyling.Apply(WinningMessage, _design,
+            message.EndsWith("WON!", StringComparison.Ordinal) ? AudienceTextRole.Win : AudienceTextRole.Rule);
+    }
 
     private AudienceDesignSettings _design;
     private IReadOnlyList<Track> _currentPlayedTracks = Array.Empty<Track>();
@@ -34,79 +41,25 @@ public partial class AudienceWindow : Window
     {
         _design = design.Clone();
 
-        var font = SafeFont(_design.FontFamilyName);
-        WinningMessage.FontFamily = SafeFont(_design.WinningFontFamilyName ?? _design.FontFamilyName);
-        WinningMessage.Foreground = BrushFromHex(_design.WinningTextColor ?? _design.TitleColor);
-        WinningMessage.FontSize = double.IsFinite(_design.WinningFontSize) ? Math.Clamp(_design.WinningFontSize, 12, 80) : 34;
-        WinningMessage.FontWeight = _design.WinningBold ? FontWeights.Bold : FontWeights.Normal;
-        WinningMessage.FontStyle = _design.WinningItalic ? FontStyles.Italic : FontStyles.Normal;
-
         AudienceRoot.Background = BrushFromHex(_design.BackgroundColor);
-
         AudienceHeader.Text = _design.HeaderText;
-        AudienceHeader.FontFamily = font;
-        AudienceHeader.FontSize =
-            Math.Clamp(_design.HeaderFontSize, 12, 80);
-        AudienceHeader.Foreground =
-            BrushFromHex(_design.HeaderColor);
-        AudienceHeader.Stroke =
-            BrushFromHex(_design.TextOutlineColor);
-        AudienceHeader.StrokeThickness =
-            _design.UseTextOutline ? _design.TextOutlineWidth : 0;
-
-        AudienceTitle.FontFamily = font;
-        AudienceTitle.FontSize =
-            Math.Clamp(_design.TitleFontSize, 20, 140);
-        AudienceTitle.FontWeight =
-            _design.BoldTitle ? FontWeights.Bold : FontWeights.Normal;
-        AudienceTitle.Foreground =
-            BrushFromHex(_design.TitleColor);
-        AudienceTitle.Stroke =
-            BrushFromHex(_design.TextOutlineColor);
-        AudienceTitle.StrokeThickness =
-            _design.UseTextOutline ? _design.TextOutlineWidth : 0;
-
-        AudienceArtist.FontFamily = font;
-        AudienceArtist.FontSize =
-            Math.Clamp(_design.ArtistFontSize, 14, 90);
-        AudienceArtist.Foreground =
-            BrushFromHex(_design.ArtistColor);
-        AudienceArtist.Stroke =
-            BrushFromHex(_design.TextOutlineColor);
-        AudienceArtist.StrokeThickness =
-            _design.UseTextOutline ? _design.TextOutlineWidth : 0;
-        AudienceArtist.Visibility =
-            _design.ShowArtist ? Visibility.Visible : Visibility.Collapsed;
-
         PlayedHeader.Text = _design.PlayedHeaderText;
-        PlayedHeader.FontFamily = font;
-        PlayedHeader.FontSize =
-            Math.Max(22, _design.HeaderFontSize);
-        PlayedHeader.Foreground =
-            BrushFromHex(_design.HeaderColor);
-        PlayedHeader.Stroke =
-            BrushFromHex(_design.TextOutlineColor);
-        PlayedHeader.StrokeThickness =
-            _design.UseTextOutline ? _design.TextOutlineWidth : 0;
-
-        PlayedPageText.FontFamily = font;
-        PlayedPageText.FontSize =
-            Math.Clamp(_design.PlayedFontSize, 24, 38);
-        PlayedPageText.Foreground =
-            BrushFromHex(_design.PlayedTextColor);
-        PlayedPageText.Stroke =
-            BrushFromHex(_design.TextOutlineColor);
-        PlayedPageText.StrokeThickness =
-            _design.UseTextOutline ? _design.TextOutlineWidth : 0;
-
+        AudienceTextStyling.Apply(AudienceHeader, _design, AudienceTextRole.Header);
+        AudienceTextStyling.Apply(AudienceArtist, _design, AudienceTextRole.Artist);
+        AudienceTextStyling.Apply(PlayedHeader, _design, AudienceTextRole.PlayedHeader);
+        AudienceTextStyling.Apply(PlayedPageText, _design, AudienceTextRole.Page);
+        AudienceArtist.Visibility = _design.ShowArtist ? Visibility.Visible : Visibility.Collapsed;
+        ShowWinningMessage(WinningMessage.Text);
         LoadBackgroundImage();
-
-        if (_currentPlayedTracks.Count > 0)
-            ShowPlayedSongs(_currentPlayedTracks, _playedSongsPageIndex);
+        if (_showingPlayed) ShowPlayedSongs(_currentPlayedTracks, _playedSongsPageIndex);
+        else ShowTrack(_currentTrack);
     }
 
     public void ShowTrack(Track? track)
     {
+        _currentTrack = track;
+        _showingPlayed = false;
+        AudienceTextStyling.Apply(AudienceTitle, _design, track is null ? AudienceTextRole.Ready : AudienceTextRole.Title);
         PlayedPanel.Visibility = Visibility.Collapsed;
         NowPlayingPanel.Visibility = Visibility.Visible;
 
@@ -125,6 +78,7 @@ public partial class AudienceWindow : Window
         IReadOnlyList<Track> tracks,
         int pageIndex = 0)
     {
+        _showingPlayed = true;
         _currentPlayedTracks =
             (tracks ?? Array.Empty<Track>())
             .OrderBy(
@@ -208,6 +162,7 @@ public partial class AudienceWindow : Window
 
             var border = new Border
             {
+                ClipToBounds = true,
                 Margin = new Thickness(7, 6, 7, 6),
                 Padding = new Thickness(10, 8, 10, 8),
                 Background = background.Clone(),
@@ -218,26 +173,17 @@ public partial class AudienceWindow : Window
                 BorderThickness = new Thickness(1)
             };
 
-            border.Child = new OutlinedTextBlock
+            var labels = new StackPanel { VerticalAlignment = System.Windows.VerticalAlignment.Center };
+            var title = new OutlinedTextBlock { Text = track.Title, TextAlignment = TextAlignment.Center, TextWrapping = TextWrapping.Wrap, MaxLines = 2 };
+            AudienceTextStyling.Apply(title, _design, AudienceTextRole.PlayedTitle);
+            labels.Children.Add(title);
+            if (_design.ShowArtist)
             {
-                Text = track.DisplayName,
-                FontFamily = font,
-                FontSize = playedFontSize,
-                FontWeight = FontWeights.SemiBold,
-                Foreground = foreground,
-                Stroke = BrushFromHex(_design.TextOutlineColor),
-                StrokeThickness =
-                    _design.UseTextOutline
-                        ? _design.TextOutlineWidth
-                        : 0,
-                TextAlignment = TextAlignment.Center,
-                TextWrapping = TextWrapping.Wrap,
-                MaxLines = 4,
-                HorizontalAlignment =
-                    System.Windows.HorizontalAlignment.Stretch,
-                VerticalAlignment =
-                    System.Windows.VerticalAlignment.Center
-            };
+                var artist = new OutlinedTextBlock { Text = track.Artist, TextAlignment = TextAlignment.Center, TextWrapping = TextWrapping.Wrap, MaxLines = 1 };
+                AudienceTextStyling.Apply(artist, _design, AudienceTextRole.PlayedArtist);
+                labels.Children.Add(artist);
+            }
+            border.Child = labels;
 
             Grid.SetRow(border, i / columns);
             Grid.SetColumn(border, i % columns);
@@ -266,6 +212,7 @@ public partial class AudienceWindow : Window
                 Margin = new Thickness(20)
             };
 
+            AudienceTextStyling.Apply(empty, _design, AudienceTextRole.Empty);
             Grid.SetRowSpan(empty, rows);
             Grid.SetColumnSpan(empty, columns);
             PlayedSongsGrid.Children.Add(empty);

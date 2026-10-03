@@ -22,20 +22,35 @@ public partial class AudienceDesignWindow : Window
     private AudienceDesignSettings _working;
     private bool _loading = true;
     private readonly AudienceDesignSettingsService _fileService = new();
-
+    private readonly AudienceWindow _preview;
     public AudienceDesignSettings Settings => _working;
+    private AudienceTextRole SelectedRole => ElementBox.SelectedValue is AudienceTextRole role ? role : AudienceTextRole.Rule;
 
     public AudienceDesignWindow(AudienceDesignSettings current)
     {
         InitializeComponent();
         _working = current.Clone();
-
-        FontBox.ItemsSource = Fonts.SystemFontFamilies
-            .OrderBy(f => f.Source)
-            .Select(f => f.Source)
-            .ToList();
-
-        WinningFontBox.ItemsSource = FontBox.ItemsSource;
+        _preview = new AudienceWindow(_working);
+        var content = _preview.Content;
+        _preview.Content = null;
+        AudiencePreview.Content = content;
+        Closed += (_, _) => _preview.Close();
+        ElementFontBox.ItemsSource = Fonts.SystemFontFamilies.OrderBy(f => f.Source).Select(f => f.Source).ToList();
+        ElementBox.ItemsSource = new Dictionary<AudienceTextRole, string>
+        {
+            [AudienceTextRole.Rule] = "Playing for a line / corners / house",
+            [AudienceTextRole.Win] = "Winner announcement",
+            [AudienceTextRole.Header] = "Now playing heading",
+            [AudienceTextRole.Ready] = "Ready message",
+            [AudienceTextRole.Title] = "Current song title",
+            [AudienceTextRole.Artist] = "Current artist",
+            [AudienceTextRole.PlayedHeader] = "Played songs heading",
+            [AudienceTextRole.PlayedTitle] = "Played-list song titles",
+            [AudienceTextRole.PlayedArtist] = "Played-list artists",
+            [AudienceTextRole.Page] = "Page number",
+            [AudienceTextRole.Empty] = "No songs played message"
+        };
+        ElementBox.SelectedIndex = 0;
         LoadControls();
         _loading = false;
         UpdatePreview();
@@ -43,161 +58,94 @@ public partial class AudienceDesignWindow : Window
 
     private void LoadControls()
     {
-        WinningFontBox.SelectedItem = _working.WinningFontFamilyName ?? _working.FontFamilyName;
-        WinningSizeBox.Text = _working.WinningFontSize.ToString("0");
-        WinningBoldBox.IsChecked = _working.WinningBold;
-        WinningItalicBox.IsChecked = _working.WinningItalic;
         HeaderBox.Text = _working.HeaderText;
         ReadyBox.Text = _working.ReadyText;
         PlayedHeaderBox.Text = _working.PlayedHeaderText;
-
-        FontBox.SelectedItem = _working.FontFamilyName;
-        if (FontBox.SelectedItem is null)
-            FontBox.Text = _working.FontFamilyName;
-
-        HeaderSizeBox.Text = _working.HeaderFontSize.ToString("0");
-        TitleSizeBox.Text = _working.TitleFontSize.ToString("0");
-        ArtistSizeBox.Text = _working.ArtistFontSize.ToString("0");
-        PlayedSizeBox.Text = _working.PlayedFontSize.ToString("0");
-
         ShowArtistBox.IsChecked = _working.ShowArtist;
-        BoldTitleBox.IsChecked = _working.BoldTitle;
-        OutlineTextBox.IsChecked = _working.UseTextOutline;
-        OutlineWidthBox.Text = _working.TextOutlineWidth.ToString("0.0");
-
         BackgroundImageBox.Text = _working.BackgroundImagePath;
-        ImageOpacitySlider.Value = _working.BackgroundImageOpacity;
+        ImageOpacitySlider.Value = double.IsFinite(_working.BackgroundImageOpacity) ? Math.Clamp(_working.BackgroundImageOpacity, 0, 1) : 0.35;
+        LoadElement();
+    }
 
-        RefreshColourButtons();
+    private void LoadElement()
+    {
+        var wasLoading = _loading; _loading = true;
+        var style = _working.StyleFor(SelectedRole);
+        ElementFontBox.SelectedItem = style.FontFamilyName;
+        if (ElementFontBox.SelectedItem is null)
+        {
+            var fonts = ((IEnumerable<string>)ElementFontBox.ItemsSource).ToList();
+            fonts.Add(style.FontFamilyName); ElementFontBox.ItemsSource = fonts;
+            ElementFontBox.SelectedItem = style.FontFamilyName;
+        }
+        ElementSizeBox.Text = style.Size.ToString("0.#");
+        ElementBoldBox.IsChecked = style.Bold; ElementItalicBox.IsChecked = style.Italic;
+        ElementOutlineBox.IsChecked = style.Outline; ElementOutlineWidthBox.Text = style.OutlineWidth.ToString("0.#");
+        RefreshColourButtons(); _loading = wasLoading;
     }
 
     private void ReadControls()
     {
-        if (WinningFontBox.SelectedItem is string winningFont) _working.WinningFontFamilyName = winningFont;
-        if (double.TryParse(WinningSizeBox.Text, out var winningSize) && double.IsFinite(winningSize))
-            _working.WinningFontSize = Math.Clamp(winningSize, 12, 80);
-        _working.WinningBold = WinningBoldBox.IsChecked == true;
-        _working.WinningItalic = WinningItalicBox.IsChecked == true;
         _working.HeaderText = HeaderBox.Text.Trim();
-        _working.ReadyText = string.IsNullOrWhiteSpace(ReadyBox.Text)
-            ? "READY"
-            : ReadyBox.Text.Trim();
-        _working.PlayedHeaderText = string.IsNullOrWhiteSpace(PlayedHeaderBox.Text)
-            ? "PLAYED SONGS"
-            : PlayedHeaderBox.Text.Trim();
-
-        if (FontBox.SelectedItem is string selectedFont)
-            _working.FontFamilyName = selectedFont;
-
-        if (double.TryParse(HeaderSizeBox.Text, out var header))
-            _working.HeaderFontSize = Math.Clamp(header, 12, 80);
-
-        if (double.TryParse(TitleSizeBox.Text, out var title))
-            _working.TitleFontSize = Math.Clamp(title, 20, 140);
-
-        if (double.TryParse(ArtistSizeBox.Text, out var artist))
-            _working.ArtistFontSize = Math.Clamp(artist, 14, 90);
-
-        if (double.TryParse(PlayedSizeBox.Text, out var played))
-            _working.PlayedFontSize = Math.Clamp(played, 12, 60);
-
+        _working.ReadyText = string.IsNullOrWhiteSpace(ReadyBox.Text) ? "READY" : ReadyBox.Text.Trim();
+        _working.PlayedHeaderText = string.IsNullOrWhiteSpace(PlayedHeaderBox.Text) ? "PLAYED SONGS" : PlayedHeaderBox.Text.Trim();
         _working.ShowArtist = ShowArtistBox.IsChecked == true;
-        _working.BoldTitle = BoldTitleBox.IsChecked == true;
-        _working.UseTextOutline = OutlineTextBox.IsChecked == true;
-
-        if (double.TryParse(OutlineWidthBox.Text, out var outlineWidth))
-            _working.TextOutlineWidth = Math.Clamp(outlineWidth, 0, 12);
-
         _working.BackgroundImageOpacity = ImageOpacitySlider.Value;
     }
 
-    private void DesignChanged(object sender, RoutedEventArgs e)
+    private void ElementChanged(object sender, SelectionChangedEventArgs e)
     {
-        if (_loading)
-            return;
+        if (_loading) return;
+        LoadElement(); UpdatePreview();
+    }
 
-        ReadControls();
+    private void ElementStyleChanged(object sender, RoutedEventArgs e)
+    {
+        if (_loading) return;
+        var style = _working.StyleFor(SelectedRole);
+        if (ElementFontBox.SelectedItem is string font) style.FontFamilyName = font;
+        if (double.TryParse(ElementSizeBox.Text, out var size) && double.IsFinite(size)) style.Size = Math.Clamp(size, 12, 140);
+        if (double.TryParse(ElementOutlineWidthBox.Text, out var width) && double.IsFinite(width)) style.OutlineWidth = Math.Clamp(width, 0, 12);
+        style.Bold = ElementBoldBox.IsChecked == true; style.Italic = ElementItalicBox.IsChecked == true;
+        style.Outline = ElementOutlineBox.IsChecked == true;
+        (_working.TextStyles ??= new())[SelectedRole.ToString()] = style;
         UpdatePreview();
     }
 
+    private void ElementColour_Click(object sender, RoutedEventArgs e)
+    {
+        var style = _working.StyleFor(SelectedRole); style.Color = PickColour(style.Color);
+        (_working.TextStyles ??= new())[SelectedRole.ToString()] = style; UpdatePreview();
+    }
+    private void ElementOutlineColour_Click(object sender, RoutedEventArgs e)
+    {
+        var style = _working.StyleFor(SelectedRole); style.OutlineColor = PickColour(style.OutlineColor);
+        (_working.TextStyles ??= new())[SelectedRole.ToString()] = style; UpdatePreview();
+    }
+    private void DesignChanged(object sender, RoutedEventArgs e)
+    {
+        if (_loading) return;
+        ReadControls(); UpdatePreview();
+    }
     private void UpdatePreview()
     {
-        PreviewWinning.FontFamily = SafeFont(_working.WinningFontFamilyName ?? _working.FontFamilyName);
-        PreviewWinning.Foreground = BrushFromHex(_working.WinningTextColor ?? _working.TitleColor);
-        PreviewWinning.FontSize = double.IsFinite(_working.WinningFontSize) ? Math.Clamp(_working.WinningFontSize, 12, 80) : 34;
-        PreviewWinning.FontWeight = _working.WinningBold ? FontWeights.Bold : FontWeights.Normal;
-        PreviewWinning.FontStyle = _working.WinningItalic ? FontStyles.Italic : FontStyles.Normal;
-        var font = SafeFont(_working.FontFamilyName);
-
-        PreviewRoot.Background = BrushFromHex(_working.BackgroundColor);
-
-        PreviewHeader.Text = _working.HeaderText;
-        PreviewHeader.FontFamily = font;
-        PreviewHeader.FontSize = _working.HeaderFontSize;
-        PreviewHeader.Foreground = BrushFromHex(_working.HeaderColor);
-        PreviewHeader.Stroke = BrushFromHex(_working.TextOutlineColor);
-        PreviewHeader.StrokeThickness =
-            _working.UseTextOutline ? _working.TextOutlineWidth : 0;
-
-        PreviewTitle.FontFamily = font;
-        PreviewTitle.FontSize = _working.TitleFontSize;
-        PreviewTitle.Foreground = BrushFromHex(_working.TitleColor);
-        PreviewTitle.FontWeight =
-            _working.BoldTitle ? FontWeights.Bold : FontWeights.Normal;
-        PreviewTitle.Stroke = BrushFromHex(_working.TextOutlineColor);
-        PreviewTitle.StrokeThickness =
-            _working.UseTextOutline ? _working.TextOutlineWidth : 0;
-
-        PreviewArtist.FontFamily = font;
-        PreviewArtist.FontSize = _working.ArtistFontSize;
-        PreviewArtist.Foreground = BrushFromHex(_working.ArtistColor);
-        PreviewArtist.Stroke = BrushFromHex(_working.TextOutlineColor);
-        PreviewArtist.StrokeThickness =
-            _working.UseTextOutline ? _working.TextOutlineWidth : 0;
-        PreviewArtist.Visibility =
-            _working.ShowArtist ? Visibility.Visible : Visibility.Collapsed;
-
-        PreviewBackgroundImage.Source = null;
-        PreviewBackgroundImage.Opacity = _working.BackgroundImageOpacity;
-
-        if (!string.IsNullOrWhiteSpace(_working.BackgroundImagePath)
-            && File.Exists(_working.BackgroundImagePath))
-        {
-            try
-            {
-                var bitmap = new BitmapImage();
-                bitmap.BeginInit();
-                bitmap.CacheOption = BitmapCacheOption.OnLoad;
-                bitmap.UriSource =
-                    new Uri(_working.BackgroundImagePath, UriKind.Absolute);
-                bitmap.EndInit();
-                bitmap.Freeze();
-                PreviewBackgroundImage.Source = bitmap;
-            }
-            catch
-            {
-                PreviewBackgroundImage.Source = null;
-            }
-        }
-
+        _preview.ApplyDesign(_working);
+        _preview.ShowWinningMessage(SelectedRole == AudienceTextRole.Win ? "FULL HOUSE WON!" : "WE ARE PLAYING FOR A FULL HOUSE");
+        if (SelectedRole >= AudienceTextRole.PlayedHeader)
+            _preview.ShowPlayedSongs(SelectedRole == AudienceTextRole.Empty ? Array.Empty<Track>() : Enumerable.Range(1, 6).Select(i => new Track { Title = $"Example song {i}", Artist = "Example artist" }).ToArray());
+        else _preview.ShowTrack(SelectedRole == AudienceTextRole.Ready ? null : new Track { Title = "TAKE ON ME", Artist = "a-ha" });
         RefreshColourButtons();
     }
-
     private void RefreshColourButtons()
     {
-        SetButtonSwatch(WinningColourButton, _working.WinningTextColor ?? _working.TitleColor);
-        SetButtonSwatch(HeaderColourButton, _working.HeaderColor);
-        SetButtonSwatch(TitleColourButton, _working.TitleColor);
-        SetButtonSwatch(OutlineColourButton, _working.TextOutlineColor);
-        SetButtonSwatch(ArtistColourButton, _working.ArtistColor);
-        SetButtonSwatch(PlayedColourButton, _working.PlayedTextColor);
+        var style = _working.StyleFor(SelectedRole);
+        SetButtonSwatch(ElementColourButton, style.Color);
+        SetButtonSwatch(ElementOutlineColourButton, style.OutlineColor);
         SetButtonSwatch(BackgroundColourButton, _working.BackgroundColor);
     }
-
-    private static void SetButtonSwatch(WpfButton button, string hex)
+    private static void SetButtonSwatch(WpfButton button, string color)
     {
-        button.BorderBrush = BrushFromHex(hex);
-        button.BorderThickness = new Thickness(3);
+        button.BorderBrush = BrushFromHex(color); button.BorderThickness = new Thickness(3);
     }
 
     private string PickColour(string current)
@@ -222,42 +170,6 @@ public partial class AudienceDesignWindow : Window
         return dialog.ShowDialog() == Forms.DialogResult.OK
             ? $"#{dialog.Color.R:X2}{dialog.Color.G:X2}{dialog.Color.B:X2}"
             : current;
-    }
-
-    private void WinningColour_Click(object sender, RoutedEventArgs e)
-    {
-        _working.WinningTextColor = PickColour(_working.WinningTextColor ?? _working.TitleColor);
-        UpdatePreview();
-    }
-
-    private void OutlineColour_Click(object sender, RoutedEventArgs e)
-    {
-        _working.TextOutlineColor = PickColour(_working.TextOutlineColor);
-        UpdatePreview();
-    }
-
-    private void HeaderColour_Click(object sender, RoutedEventArgs e)
-    {
-        _working.HeaderColor = PickColour(_working.HeaderColor);
-        UpdatePreview();
-    }
-
-    private void TitleColour_Click(object sender, RoutedEventArgs e)
-    {
-        _working.TitleColor = PickColour(_working.TitleColor);
-        UpdatePreview();
-    }
-
-    private void ArtistColour_Click(object sender, RoutedEventArgs e)
-    {
-        _working.ArtistColor = PickColour(_working.ArtistColor);
-        UpdatePreview();
-    }
-
-    private void PlayedColour_Click(object sender, RoutedEventArgs e)
-    {
-        _working.PlayedTextColor = PickColour(_working.PlayedTextColor);
-        UpdatePreview();
     }
 
     private void BackgroundColour_Click(object sender, RoutedEventArgs e)

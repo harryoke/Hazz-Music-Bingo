@@ -49,6 +49,15 @@ public sealed class OutlinedTextBlock : FrameworkElement
                 FrameworkPropertyMetadataOptions.AffectsMeasure |
                 FrameworkPropertyMetadataOptions.AffectsRender));
 
+    public static readonly DependencyProperty FontStyleProperty = DependencyProperty.Register(
+        nameof(FontStyle), typeof(System.Windows.FontStyle), typeof(OutlinedTextBlock),
+        new FrameworkPropertyMetadata(FontStyles.Normal, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsRender));
+    public System.Windows.FontStyle FontStyle
+    {
+        get => (System.Windows.FontStyle)GetValue(FontStyleProperty);
+        set => SetValue(FontStyleProperty, value);
+    }
+
     public static readonly DependencyProperty FontWeightProperty =
         DependencyProperty.Register(
             nameof(FontWeight),
@@ -221,7 +230,7 @@ public sealed class OutlinedTextBlock : FrameworkElement
         {
             pen = new WpfPen(
                 Stroke,
-                StrokeThickness)
+                StrokeThickness * 2)
             {
                 LineJoin = PenLineJoin.Round
             };
@@ -229,10 +238,9 @@ public sealed class OutlinedTextBlock : FrameworkElement
             pen.Freeze();
         }
 
-        drawingContext.DrawGeometry(
-            Foreground,
-            pen,
-            geometry);
+        // Draw the outline behind the fill so thick outlines do not swallow thin glyphs.
+        if (pen is not null) drawingContext.DrawGeometry(null, pen, geometry);
+        drawingContext.DrawGeometry(Foreground, null, geometry);
     }
 
     private FormattedText CreateFormattedText(double maxWidth)
@@ -243,7 +251,7 @@ public sealed class OutlinedTextBlock : FrameworkElement
             WpfFlowDirection.LeftToRight,
             new Typeface(
                 FontFamily,
-                FontStyles.Normal,
+                FontStyle,
                 FontWeight,
                 FontStretches.Normal),
             FontSize,
