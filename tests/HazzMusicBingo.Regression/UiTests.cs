@@ -98,7 +98,25 @@ internal static class UiTests
         var shortcutEditor = new GameShortcutWindow(new GameShortcut { Label = "1960s", Color = "#FFAA00", GameFile = "fixture.hmbgame",
             Audience = new AudienceDesignSettings { FontFamilyName = "Georgia" } }, new AudienceDesignSettings());
         Check(shortcutEditor.ButtonLabel == "1960s" && shortcutEditor.Audience.FontFamilyName == "Georgia", "Shortcut editor loads saved label and theme");
-        Render((FrameworkElement)shortcutEditor.Content, Path.Combine(outputFolder, "game-button-editor.png"), 620, 470);
+        var editorRoot = (FrameworkElement)shortcutEditor.Content;
+        var themeSummary = (TextBlock)shortcutEditor.FindName("ThemeText");
+        var originalSummary = themeSummary.Text;
+        themeSummary.Text = string.Join(" ", Enumerable.Repeat("A long theme and background image name", 30));
+        foreach (var size in new[] { new Size(620, 430), new Size(420, 280), new Size(620, 600) })
+        {
+            Layout(editorRoot, size.Width, size.Height);
+            foreach (var name in new[] { "SaveButton", "CancelButton" })
+            {
+                var action = (Button)shortcutEditor.FindName(name);
+                var bounds = action.TransformToAncestor(editorRoot).TransformBounds(new Rect(action.RenderSize));
+                Check(bounds.Top >= 0 && bounds.Left >= 0 && bounds.Bottom <= size.Height && bounds.Right <= size.Width
+                    && action.ActualHeight >= 30 && action.IsEnabled, $"{name} stays accessible at {size}");
+            }
+            var scroll = (ScrollViewer)shortcutEditor.FindName("EditorScroll");
+            Check(scroll.ScrollableHeight > 0, "Long game-button form scrolls without moving footer actions");
+        }
+        themeSummary.Text = originalSummary;
+        Render(editorRoot, Path.Combine(outputFolder, "game-button-editor.png"), 620, 500);
         shortcutEditor.Close();
         var flags = System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic;
         var demoButtons = new[] { "1960s", "1970s", "1980s", "1990s", "Rock", "Disco", "Christmas", "Party mix" }

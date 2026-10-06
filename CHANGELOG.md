@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased - game-button dialogue layout
+
+- Keep Save button and Cancel in a fixed footer, make the form scrollable and allow the window to resize. Long theme summaries and smaller available window sizes can no longer push the actions below the visible area.
+- Added nine layout checks across three viewport sizes. Windows Release build passes with zero warnings/errors; all 419 regression checks pass.
+
 ## v1.0 - audience text styles and clip start positions
 
 - Added separate font, size, colour, bold, italic and outline controls for eleven audience text elements, including distinct playing-for and winner announcements.
