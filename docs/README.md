@@ -1,6 +1,6 @@
 ![Hazz Music Bingo](images/hazz-music-bingo.png)
 
-# Hazz Music Bingo v1.0 documentation
+# Hazz Music Bingo v1.1 documentation
 
 - [Complete illustrated PDF manual](Hazz_Music_Bingo_v1.0_Complete_Manual.pdf): 31 pages in plain English covering how to play, run an event, configure themes, print cards, recover games and understand card randomisation and game mathematics. [Direct download](https://github.com/harryoke/Hazz-Music-Bingo/releases/download/v1.0/Hazz_Music_Bingo_v1.0_Complete_Manual.pdf).
 - [Quick start](QUICK_START.md): installation, event setup and the Line → Four Corners → Full House workflow.
@@ -11,3 +11,6 @@
 - [Copyright notice](COPYRIGHT_NOTICE.md) and [full licence](../LICENSE.txt).
 
 The app includes no music. Portable game files contain paths and layouts, not audio or artwork.
+
+
+In v1.1, the game-button editor can be resized and its form scrolls. **Save button** and **Cancel** remain visible in a fixed footer. The included v1.0 manual still covers the game features; its editor screenshot predates this layout correction.

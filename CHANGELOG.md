@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased - game-button dialogue layout
+## v1.1 - game-button dialogue layout
 
 - Keep Save button and Cancel in a fixed footer, make the form scrollable and allow the window to resize. Long theme summaries and smaller available window sizes can no longer push the actions below the visible area.
 - Added nine layout checks across three viewport sizes. Windows Release build passes with zero warnings/errors; all 419 regression checks pass.

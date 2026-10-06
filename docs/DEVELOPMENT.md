@@ -67,7 +67,7 @@ The requested first public release is named **Hazz Music Bingo v.0.1**, tag **v.
 
 Version-1 archives add an optional Winning object. Validation precedes mutation; winning settings are inserted in the same transaction as game state and cards. Reset clears acknowledgements transactionally with played state. Rule changes only update settings. Older apps ignore the optional archive object and will lose those settings if they resave it.
 
-The current release is **v1.0**, tag **v1.0**, application version **1.0.0**. The original public release remains at tag **v.0.1**. The legacy release-v0.1 workflow must not be used to publish newer versions: create their own versioned tag and assets after validation. Normal main-branch CI does not publish releases.
+The current release is **v1.1**, tag **v1.1**, application version **1.1.0**. The original public release remains at tag **v.0.1**. The legacy release-v0.1 workflow must not be used to publish newer versions: create their own versioned tag and assets after validation. Normal main-branch CI does not publish releases.
 
 ## v1.0 source selection, shortcuts and tags
 

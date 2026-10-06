@@ -9,9 +9,9 @@
     <UseWindowsForms>true</UseWindowsForms>
     <AssemblyName>HazzMusicBingo</AssemblyName>
     <RootNamespace>HazzMusicBingo</RootNamespace>
-    <Version>1.0.0</Version>
-    <AssemblyVersion>1.0.0.0</AssemblyVersion>
-    <FileVersion>1.0.0.0</FileVersion>
+    <Version>1.1.0</Version>
+    <AssemblyVersion>1.1.0.0</AssemblyVersion>
+    <FileVersion>1.1.0.0</FileVersion>
     <Product>Hazz Music Bingo</Product>
     <Description>Music bingo host, card designer, printing and winner verification for Windows.</Description>
     <ApplicationIcon>Assets/HazzMusicBingo.ico</ApplicationIcon>

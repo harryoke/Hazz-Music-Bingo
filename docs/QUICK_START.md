@@ -1,10 +1,10 @@
 ![Hazz Music Bingo](images/hazz-music-bingo.png)
 
-# Hazz Music Bingo v1.0 — quick start
+# Hazz Music Bingo v1.1 — quick start
 
 ## Install
 
-Download **Hazz-Music-Bingo-v1.0-Windows-x64.zip** from the [v1.0 release](https://github.com/harryoke/Hazz-Music-Bingo/releases/tag/v1.0). Extract the entire ZIP into a folder, keep `TagLibSharp.dll` beside the EXE, then run **HazzMusicBingo.exe**. Windows x64 is required; .NET is included. Music is not included.
+Download **Hazz-Music-Bingo-v1.1-Windows-x64.zip** from the [v1.1 release](https://github.com/harryoke/Hazz-Music-Bingo/releases/tag/v1.1). Extract the entire ZIP into a folder, keep `TagLibSharp.dll` beside the EXE, then run **HazzMusicBingo.exe**. Windows x64 is required; .NET is included. Music is not included.
 
 Upgrading from v.0.1? Close the old app and extract this version into a new folder. The same Windows account automatically retains its library and games. Back up the database through **GAME HISTORY / RECOVERY** before your first event with the update. Old saves open with live tracking off until you apply a sold-card range.
 

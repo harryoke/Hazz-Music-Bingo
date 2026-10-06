@@ -1,10 +1,10 @@
 ![Hazz Music Bingo](docs/images/hazz-music-bingo.png)
 
-# Hazz Music Bingo v1.0
+# Hazz Music Bingo v1.1
 
 A Windows music-bingo host with custom 5×5 cards, print previews, an audience screen, missing-music checks and winner verification.
 
-[Download Windows x64](https://github.com/harryoke/Hazz-Music-Bingo/releases/tag/v1.0) · [Quick start](docs/QUICK_START.md) · [User guide](docs/USER_GUIDE.md) · [Build and development](docs/DEVELOPMENT.md) · [Testing](docs/TESTING.md) · [Changes](CHANGELOG.md)
+[Download Windows x64](https://github.com/harryoke/Hazz-Music-Bingo/releases/tag/v1.1) · [Quick start](docs/QUICK_START.md) · [User guide](docs/USER_GUIDE.md) · [Build and development](docs/DEVELOPMENT.md) · [Testing](docs/TESTING.md) · [Changes](CHANGELOG.md)
 
 [Download the complete illustrated PDF manual](https://github.com/harryoke/Hazz-Music-Bingo/releases/download/v1.0/Hazz_Music_Bingo_v1.0_Complete_Manual.pdf) — 31 pages covering player rules, hosting, themes, printing, recovery, card randomisation and the game engine's maths.
 
@@ -61,3 +61,6 @@ The automated suite uses temporary profiles and covers persistence, card rules, 
 The name **v.0.1** is the first public release label; earlier source archives used an internal v0.2.15 label. Existing local databases receive an additive game-code column. Existing version-1 saved games remain supported when structurally valid. Loading a portable saved game intentionally reshuffles playback order; reopening history preserves it.
 
 Game files store song paths and layouts, not audio or artwork. The app currently targets .NET 8; see the development guide for support and upgrade planning. Third-party components are listed in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+
+
+In v1.1, the game-button editor can be resized and its form scrolls. **Save button** and **Cancel** remain visible in a fixed footer. The included v1.0 manual still covers the game features; its editor screenshot predates this layout correction.

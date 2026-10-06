@@ -1,10 +1,10 @@
 ![Hazz Music Bingo](images/hazz-music-bingo.png)
 
-# Hazz Music Bingo v1.0 — user guide
+# Hazz Music Bingo v1.1 — user guide
 
 ## Install and start
 
-Download the Windows x64 ZIP from the [v1.0 release](https://github.com/harryoke/Hazz-Music-Bingo/releases/tag/v1.0), extract it, and run **HazzMusicBingo.exe**. The .NET runtime is included. The application is unsigned. Windows audio support and a working sound output are required. No music is included. Keep your own music on a local or reliably connected drive.
+Download the Windows x64 ZIP from the [v1.0 release](https://github.com/harryoke/Hazz-Music-Bingo/releases/tag/v1.1), extract it, and run **HazzMusicBingo.exe**. The .NET runtime is included. The application is unsigned. Windows audio support and a working sound output are required. No music is included. Keep your own music on a local or reliably connected drive.
 
 The app stores its library, games and settings in `%LOCALAPPDATA%\HazzMusicBingo`. Moving or replacing the executable does not move or erase this data. First startup creates an empty database. Later startups reopen the active game automatically.
 
@@ -209,3 +209,6 @@ For a 1970s game: scan your 70s folder, confirm that path is shown as the source
 The selected folder needs at least 60 available songs with a successful scanned duration. Missing/unscanned folders or too few available songs stop generation and leave the active database game intact. No fallback songs are drawn from other folders. Choosing a folder alone does not scan it; scan first if it is new.
 
 ![Audience message styling](images/audience-message-design.png)
+
+
+In v1.1, the game-button editor can be resized and its form scrolls. **Save button** and **Cancel** remain visible in a fixed footer. The included v1.0 manual still covers the game features; its editor screenshot predates this layout correction.
